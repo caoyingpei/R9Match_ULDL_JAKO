@@ -1,0 +1,1 @@
+pyinstaller.exe    -F  MainR9Match.py -i  E:\3.pic\ico\3.ico 
