@@ -1,0 +1,16 @@
+{
+	"R9_UL_FILE_CONTENT"  :  "E:\\jako\\ulfile",
+	"R9_DL_FILE_EXIT"     :  "TRUE",
+	"R9_DL_FILE_CONTENT"  :  "E:\\jako\\dlfile",
+	"R9_RM_OLD_FILE_FLAG"  :  "TRUE",
+	"R9_RESULT_FILE_CONTENT" : "E:\\jako\\outputfile\\voice",
+	"R9_RESULT_FILE_CONTENT_EMPTY" : "E:\\jako\\outputfile\\empty",
+	"R9_RESULT_FILE_CONTENT_BAK" : "E:\\jako\\outputfile_bak\\voice",
+	"R9_RESULT_FILE_CONTENT_BAK_EMPTY" : "E:\\jako\\outputfile_bak\\empty",
+	"R9_UL_DL_PERIOD"     :  128,
+	"R9_CHECK_PERIOD"     :  60,
+	"R9_MATCH_HOW_MANY_MIN_AGO" : 0,
+	"R9_CHECK_FILE_STATUS_PERIOD" : 100,
+	"R9_OPEN_FILE_FILTER_FLAG" : "FALSE",
+	"R9_OPEN_LOG_FLAG" : "FALSE"
+}
