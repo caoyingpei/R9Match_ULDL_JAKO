@@ -21,7 +21,7 @@ _SH_DENYRW = 0x10
 class R9UlDlMatch():
     '''
     R9 上下行JAKO文件匹配
- 
+    2017-10-17 增加将 文件大小小于？KB的文件转存为 空文件但名字不能改成LU
     '''
 
     whitelist = ['jako']
@@ -49,8 +49,10 @@ class R9UlDlMatch():
         self.r9_check_period  = cfg['R9_CHECK_PERIOD']
         self.r9_check_file_status_period  = cfg['R9_CHECK_FILE_STATUS_PERIOD']
         self.r9_rm_old_file_flag = cfg['R9_RM_OLD_FILE_FLAG']
-        
-        
+        try:
+            self.r9_change_file_loc_kb_thres = cfg['R9_CHANGE_FILE_LOC_KB_THRES']
+        except:
+            self.r9_change_file_loc_kb_thres = 0
         self.r9_result_file_content_bak  = cfg['R9_RESULT_FILE_CONTENT_BAK']
         self.r9_result_file_content_bak_empty = cfg['R9_RESULT_FILE_CONTENT_BAK_EMPTY']
         try:
@@ -267,6 +269,8 @@ class R9UlDlMatch():
                         path = split_header[0]
                         bak_path = self.r9_result_file_content_bak + '\\'+self.r9_get_year_month_day()
                         
+                        
+                        
                     replace_header= split_header[1].replace(split_header[1][0:29],split_header[1][0:26]\
                                     +dlfile.rsplit('\\',1)[1][26:29])
                     
@@ -284,13 +288,17 @@ class R9UlDlMatch():
                     if not os.path.exists(bak_path):
                         os.makedirs(bak_path) 
                     remotfile = path+'\\'+replace_header
-                    remotfile_bak = bak_path+'\\'+replace_header                
+                    remotfile_bak = bak_path+'\\'+replace_header 
+ 
+                    
+                                   
                     if self.r9_r9_open_log_flag == 'TRUE':
                         if os.path.exists(remotfile):
                             print('[WARNING] : {%s} is exsit'%remotfile)
                             pass
                         print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
                     self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile,UlFrameNum,DlFrameNum)
+                    
                     if 1==int(tep[len(tep)-2])//128:
                         f=open(remotfile,'w')
                         f.close()
@@ -350,17 +358,23 @@ class R9UlDlMatch():
             for i in range(len(self.dlfile_dict[key])):
                 current_file_loc = self.dlfile_dict[key][i]+'.jako'
                 tmpfile=self.dlfile_dict[key][i].rsplit(os.sep)[-1]
-
+                file_size = os.path.getsize(current_file_loc)/1024
                 
                 tep = tmpfile.split('#')
-                if 1==int(tep[len(tep)-2])//128:
+                if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     path = self.r9_result_file_content_empty 
                     if not os.path.exists(path):
                         os.makedirs(path) 
                     bak_path = self.r9_result_file_content_bak_empty + '\\' + self.r9_get_year_month_day()
                     if not os.path.exists(bak_path):
                         os.makedirs(bak_path)
-                    remotfile = tmpfile[0:len(tmpfile)-20].replace(tmpfile[0:3],'nlo')+'.txt'
+                        
+                    if file_size < self.r9_change_file_loc_kb_thres:
+                        remotfile = 'n'+tmpfile[1:len(tmpfile)-20]+'.txt'
+                    else:
+                        remotfile = tmpfile[0:len(tmpfile)-20].replace(tmpfile[0:3],'nlo')+'.txt'
+                    
+                    
                 else:
                     path = self.r9_result_file_content 
                     if not os.path.exists(path):
@@ -374,7 +388,15 @@ class R9UlDlMatch():
                     remotfile=remotfile.replace('##','#N#') 
                 except:
                     pass
+
                 
+                
+                r=re.compile('IMEISV_(.*?)\.')
+                l=r.findall(remotfile)
+                if len(l)>0:
+                    remotfile=remotfile.replace(l[0],l[0]+'0')
+                
+                  
                 remotfile_bak = bak_path+'\\'+remotfile
                 remotfile = path+'\\'+remotfile
                 if self.r9_r9_open_log_flag == 'TRUE':
@@ -383,10 +405,10 @@ class R9UlDlMatch():
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)
                 
-                
+
                                     
                 if self.r9_rm_old_file_flag == 'TRUE' :
-                    if 1==int(tep[len(tep)-2])//128:
+                    if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         f=open(remotfile,'w')
                         f.close()
                         f=open(remotfile_bak,'w')
@@ -413,30 +435,47 @@ class R9UlDlMatch():
                 current_file_loc = self.ulfile_dict[key][i]+'.jako'
                 tmpfile=self.ulfile_dict[key][i].rsplit(os.sep)[-1]
                 
+                
+                file_size = os.path.getsize(current_file_loc)/1024
+                
+                
                 tep = tmpfile.split('#')
                 
-                if 1==int(tep[len(tep)-2])//128:
-                    remotfile = self.r9_result_file_content_empty+'\\'+tmpfile[0:len(tmpfile)-20].replace(tmpfile[0:3],'nlo')+'.txt'
+                if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
+                    if file_size < self.r9_change_file_loc_kb_thres:
+                        remotfile = self.r9_result_file_content_empty+'\\'+'n'+tmpfile[1:len(tmpfile)-20]+'.txt'
+                    else:
+                        remotfile = self.r9_result_file_content_empty+'\\'+tmpfile[0:len(tmpfile)-20].replace(tmpfile[0:3],'nlo')+'.txt'
+ 
+                    
+                
                 else:
                     remotfile = self.r9_result_file_content+'\\'+tmpfile[0:len(tmpfile)-20]+'.jako'
                 
                 r=re.compile('#.*?#.*?#(.*?)#N#')
-                list=r.findall(remotfile)
-                remotfile = remotfile.replace('#'+list[0]+'#N#','#N#'+list[0]+'#')
+                l=r.findall(remotfile)
+                remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
                 
                 try:
                     remotfile=remotfile.replace('##','#N#') 
                 except:
                     pass
-
+                
                 split_header=remotfile.rsplit('\\',1)
 #                 replace_header= split_header[1].replace(split_header[1][0:29],split_header[1][0:26]+'800')
                 replace_header = split_header[1]
                 path = split_header[0]
                 
+                r=re.compile('IMEISV_(.*?)\.')
+                l=r.findall(replace_header)
                 
                 
-                if 1==int(tep[len(tep)-2])//128:
+                if len(l)>0:
+                    replace_header=replace_header.replace(l[0],l[0]+'0')
+                    
+                    
+            
+                if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     bak_path = self.r9_result_file_content_bak_empty + '\\'+self.r9_get_year_month_day()
                 else:
                     bak_path = self.r9_result_file_content_bak + '\\'+self.r9_get_year_month_day()
@@ -453,7 +492,7 @@ class R9UlDlMatch():
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)  
                 if self.r9_rm_old_file_flag == 'TRUE':
-                    if 1==int(tep[len(tep)-2])//128:
+                    if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         f=open(remotfile,'w')
                         f.close()
                         f=open(remotfile_bak,'w')
