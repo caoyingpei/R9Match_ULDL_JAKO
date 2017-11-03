@@ -390,11 +390,11 @@ class R9UlDlMatch():
                     pass
 
                 
-                
-                r=re.compile('IMEISV_(.*?)\.')
-                l=r.findall(remotfile)
-                if len(l)>0:
-                    remotfile=remotfile.replace(l[0],l[0]+'0')
+                # @new version delete the function
+#                 r=re.compile('IMEISV_(.*?)\.')
+#                 l=r.findall(remotfile)
+#                 if len(l)>0:
+#                     remotfile=remotfile.replace(l[0],l[0]+'0')
                 
                   
                 remotfile_bak = bak_path+'\\'+remotfile
@@ -465,13 +465,12 @@ class R9UlDlMatch():
 #                 replace_header= split_header[1].replace(split_header[1][0:29],split_header[1][0:26]+'800')
                 replace_header = split_header[1]
                 path = split_header[0]
-                
-                r=re.compile('IMEISV_(.*?)\.')
-                l=r.findall(replace_header)
-                
-                
-                if len(l)>0:
-                    replace_header=replace_header.replace(l[0],l[0]+'0')
+
+#                 @new version delete the function
+#                 r=re.compile('IMEISV_(.*?)\.')
+#                 l=r.findall(replace_header)
+#                 if len(l)>0:
+#                     replace_header=replace_header.replace(l[0],l[0]+'0')
                     
                     
             
