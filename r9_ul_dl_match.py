@@ -297,12 +297,16 @@ class R9UlDlMatch():
                             print('[WARNING] : {%s} is exsit'%remotfile)
                             pass
                         print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
-                    self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile,UlFrameNum,DlFrameNum)
                     
-                    if 1==int(tep[len(tep)-2])//128:
-                        f=open(remotfile,'w')
-                        f.close()
-                    shutil.copy(remotfile,remotfile_bak)
+                    try:
+                        self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile_bak,UlFrameNum,DlFrameNum)
+                        
+                        if 1==int(tep[len(tep)-2])//128:
+                            f=open(remotfile_bak,'w')
+                            f.close()
+                        shutil.copy(remotfile_bak,remotfile)
+                    except:
+                        print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     if self.r9_rm_old_file_flag == 'TRUE':
                         os.remove(ulfile+'.jako')
                         os.remove(dlfile+'.jako')
@@ -415,12 +419,18 @@ class R9UlDlMatch():
                         f.close()
                         os.remove(current_file_loc)
                     else:
-                        shutil.copy(current_file_loc,remotfile)
-                        shutil.move(current_file_loc,remotfile_bak)
+                        try:
+                            shutil.copy(current_file_loc,remotfile)
+                            shutil.move(current_file_loc,remotfile_bak)
+                        except:
+                            print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     
                 else:
-                    shutil.copy(current_file_loc,remotfile)
-                    shutil.copy(current_file_loc,remotfile_bak)
+                    try:
+                        shutil.copy(current_file_loc,remotfile)
+                        shutil.copy(current_file_loc,remotfile_bak)
+                    except:
+                        print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
     def r9_get_year_month_day(self):
         
         return '%04d%02d%02d'%(datetime.datetime.now().year,
@@ -498,11 +508,17 @@ class R9UlDlMatch():
                         f.close()
                         os.remove(current_file_loc)
                     else:
-                        shutil.copy(current_file_loc,remotfile)
-                        shutil.move(current_file_loc,remotfile_bak)
+                        try:
+                            shutil.copy(current_file_loc,remotfile)
+                            shutil.move(current_file_loc,remotfile_bak)
+                        except:
+                            print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                 else:
-                    shutil.copy(current_file_loc,remotfile)
-                    shutil.copy(current_file_loc,remotfile_bak)
+                    try:
+                        shutil.copy(current_file_loc,remotfile)
+                        shutil.copy(current_file_loc,remotfile_bak)
+                    except:
+                        print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
 #         pass
 
     def run(self):
