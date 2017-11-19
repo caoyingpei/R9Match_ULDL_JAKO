@@ -41,6 +41,7 @@ class R9UlDlMatch():
             self.r9_dl_file_content = cfg['R9_DL_FILE_CONTENT']
         self.r9_result_file_content = cfg['R9_RESULT_FILE_CONTENT']
         self.r9_result_file_content_empty = cfg['R9_RESULT_FILE_CONTENT_EMPTY']
+        self.r9_result_file_content_sms = cfg['R9_RESULT_FILE_CONTENT_SMS']
         '''
         @2 初始化参数
         '''
@@ -55,6 +56,7 @@ class R9UlDlMatch():
             self.r9_change_file_loc_kb_thres = 0
         self.r9_result_file_content_bak  = cfg['R9_RESULT_FILE_CONTENT_BAK']
         self.r9_result_file_content_bak_empty = cfg['R9_RESULT_FILE_CONTENT_BAK_EMPTY']
+        self.r9_result_file_content_bak_sms = cfg['R9_RESULT_FILE_CONTENT_BAK_SMS']
         try:
             self.r9_r9_open_file_filter_flag = cfg['R9_OPEN_FILE_FILTER_FLAG']
             self.r9_r9_open_log_flag = cfg['R9_OPEN_LOG_FLAG']
@@ -247,7 +249,8 @@ class R9UlDlMatch():
                     pass
                 else:
                     tmpfile=ulfile.rsplit(os.sep)[-1]
-                    
+                    if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                        break
                     tep = tmpfile.split('#')
                     if 1==int(tep[len(tep)-2])//128:
                         remotfile = self.r9_result_file_content_empty+'\\'+tmpfile[0:len(tmpfile)-20]+'.txt'
@@ -365,7 +368,15 @@ class R9UlDlMatch():
                 file_size = os.path.getsize(current_file_loc)/1024
                 
                 tep = tmpfile.split('#')
-                if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
+                if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                    path = self.r9_result_file_content_sms 
+                    if not os.path.exists(path):
+                        os.makedirs(path) 
+                    bak_path = self.r9_result_file_content_bak_sms + '\\' + self.r9_get_year_month_day()
+                    if not os.path.exists(bak_path):
+                        os.makedirs(bak_path)
+                    remotfile = tmpfile[0:len(tmpfile)-20]+'.txt'
+                elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     path = self.r9_result_file_content_empty 
                     if not os.path.exists(path):
                         os.makedirs(path) 
@@ -412,6 +423,12 @@ class R9UlDlMatch():
 
                                     
                 if self.r9_rm_old_file_flag == 'TRUE' :
+                    if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                        try:
+                            shutil.copy(current_file_loc,remotfile)
+                            shutil.move(current_file_loc,remotfile_bak)
+                        except:
+                            print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         f=open(remotfile,'w')
                         f.close()
@@ -439,6 +456,7 @@ class R9UlDlMatch():
     def r9_ul_file_save(self):
         '''
         @1 处理匹配的程序
+        @2 11.19 添加短信处理文件夹
         '''
         for key in self.ulfile_dict.keys():
             for i in range(len(self.ulfile_dict[key])):
@@ -450,8 +468,9 @@ class R9UlDlMatch():
                 
                 
                 tep = tmpfile.split('#')
-                
-                if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
+                if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                    remotfile = self.r9_result_file_content_sms+'\\'+tmpfile[0:len(tmpfile)-20]+'.txt'
+                elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     if file_size < self.r9_change_file_loc_kb_thres:
                         remotfile = self.r9_result_file_content_empty+'\\'+'n'+tmpfile[1:len(tmpfile)-20]+'.txt'
                     else:
@@ -483,8 +502,9 @@ class R9UlDlMatch():
 #                     replace_header=replace_header.replace(l[0],l[0]+'0')
                     
                     
-            
-                if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
+                if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                    bak_path = self.r9_result_file_content_bak_sms + '\\'+self.r9_get_year_month_day()
+                elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     bak_path = self.r9_result_file_content_bak_empty + '\\'+self.r9_get_year_month_day()
                 else:
                     bak_path = self.r9_result_file_content_bak + '\\'+self.r9_get_year_month_day()
@@ -501,7 +521,13 @@ class R9UlDlMatch():
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)  
                 if self.r9_rm_old_file_flag == 'TRUE':
-                    if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
+                    if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                        try:
+                            shutil.copy(current_file_loc,remotfile)
+                            shutil.move(current_file_loc,remotfile_bak)
+                        except:
+                            print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
+                    elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         f=open(remotfile,'w')
                         f.close()
                         f=open(remotfile_bak,'w')
