@@ -24,8 +24,8 @@ class R9UlDlMatch():
     2017-10-17 增加将 文件大小小于？KB的文件转存为 空文件但名字不能改成LU
     '''
 
-    whitelist = ['jako']
-    
+    whitelist = ['jako','txt']
+    TOTAL_FRAME_NUM = 313344
     
     
     def __init__(self, cfg):
@@ -168,6 +168,18 @@ class R9UlDlMatch():
            @1 统计上行的帧号 与下行的相差范围，计算上下行头的位置，
            @2 统计上下行的总帧数，与头的位置一起统计尾巴的位置
         '''
+        '''
+            @data: 2017-11-20
+            @function:跨越最大帧的情况 
+            @author: cyp
+        '''
+        if abs(UlFrameNum - DlFrameNum+self.TOTAL_FRAME_NUM)<=self.r9_ul_dl_period :
+            UlFrameNum=self.TOTAL_FRAME_NUM+UlFrameNum
+            
+        if abs(DlFrameNum - UlFrameNum +self.TOTAL_FRAME_NUM)<=self.r9_ul_dl_period :
+            DlFrameNum=self.TOTAL_FRAME_NUM+DlFrameNum
+            
+        
         cnt = UlFrameNum - DlFrameNum
 
         if cnt > 0 :
@@ -245,12 +257,14 @@ class R9UlDlMatch():
                 dltmpList = self.r9_split(dlfile)
                 UlFrameNum= int(ultmpList[-1])
                 DlFrameNum= int(dltmpList[-1])
-                if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period:
+#                 if (UlFrameNum - DlFrameNum) TOTAL_FRAME_NUM
+                if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period and abs(UlFrameNum - DlFrameNum+self.TOTAL_FRAME_NUM)>self.r9_ul_dl_period and abs(DlFrameNum - UlFrameNum +self.TOTAL_FRAME_NUM)>self.r9_ul_dl_period :
                     pass
                 else:
                     tmpfile=ulfile.rsplit(os.sep)[-1]
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
-                        break
+                        j=j+1
+                        continue
                     tep = tmpfile.split('#')
                     if 1==int(tep[len(tep)-2])//128:
                         remotfile = self.r9_result_file_content_empty+'\\'+tmpfile[0:len(tmpfile)-20]+'.txt'
@@ -292,8 +306,16 @@ class R9UlDlMatch():
                         os.makedirs(bak_path) 
                     remotfile = path+'\\'+replace_header
                     remotfile_bak = bak_path+'\\'+replace_header 
- 
-                    
+#  TODO :TO BE DELETE
+                    if 1:
+                        if tmpfile[26:29] == '189':
+                            if not os.path.exists("E:\\TEST_189\\UL\\"):
+                                os.makedirs("E:\\TEST_189\\UL\\")
+                            if not os.path.exists("E:\\TEST_189\\DL\\"):
+                                os.makedirs("E:\\TEST_189\\DL\\")
+                            print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            shutil.copy(ulfile+'.jako',"E:\\TEST_189\\UL\\")
+                            shutil.copy(dlfile+'.jako',"E:\\TEST_189\\DL\\")
                                    
                     if self.r9_r9_open_log_flag == 'TRUE':
                         if os.path.exists(remotfile):
@@ -419,8 +441,12 @@ class R9UlDlMatch():
                     print('->',remotfile)
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)
-                
-
+#  TODO :TO BE DELETE                
+                if 1:
+                    if tmpfile[26:29] == '189':
+                        if not os.path.exists("E:\\TEST_189\\DL\\"):
+                            os.makedirs("E:\\TEST_189\\DL\\")
+                        shutil.copy(current_file_loc,"E:\\TEST_189\\DL\\")
                                     
                 if self.r9_rm_old_file_flag == 'TRUE' :
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
@@ -520,6 +546,12 @@ class R9UlDlMatch():
                     print('->',remotfile)
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)  
+#  TODO :TO BE DELETE                
+                if 1:
+                    if tmpfile[26:29] == '189':
+                        if not os.path.exists("E:\\TEST_189\\UL\\"):
+                            os.makedirs("E:\\TEST_189\\UL\\")
+                        shutil.copy(current_file_loc,"E:\\TEST_189\\UL\\")
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
