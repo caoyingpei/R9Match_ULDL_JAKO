@@ -313,10 +313,17 @@ class R9UlDlMatch():
                                 os.makedirs("E:\\TEST_189\\UL\\")
                             if not os.path.exists("E:\\TEST_189\\DL\\"):
                                 os.makedirs("E:\\TEST_189\\DL\\")
-                            print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            print('[MATCHED] [189] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
                             shutil.copy(ulfile+'.jako',"E:\\TEST_189\\UL\\")
                             shutil.copy(dlfile+'.jako',"E:\\TEST_189\\DL\\")
-                                   
+                        if tmpfile[26:29] == '202':
+                            if not os.path.exists("E:\\TEST_202\\UL\\"):
+                                os.makedirs("E:\\TEST_202\\UL\\")
+                            if not os.path.exists("E:\\TEST_202\\DL\\"):
+                                os.makedirs("E:\\TEST_202\\DL\\")
+                            print('[MATCHED] [202] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            shutil.copy(ulfile+'.jako',"E:\\TEST_202\\UL\\")
+                            shutil.copy(dlfile+'.jako',"E:\\TEST_202\\DL\\")                                   
                     if self.r9_r9_open_log_flag == 'TRUE':
                         if os.path.exists(remotfile):
                             print('[WARNING] : {%s} is exsit'%remotfile)
@@ -447,6 +454,10 @@ class R9UlDlMatch():
                         if not os.path.exists("E:\\TEST_189\\DL\\"):
                             os.makedirs("E:\\TEST_189\\DL\\")
                         shutil.copy(current_file_loc,"E:\\TEST_189\\DL\\")
+                    if tmpfile[26:29] == '202':
+                        if not os.path.exists("E:\\TEST_202\\DL\\"):
+                            os.makedirs("E:\\TEST_202\\DL\\")
+                        shutil.copy(current_file_loc,"E:\\TEST_202\\DL\\")
                                     
                 if self.r9_rm_old_file_flag == 'TRUE' :
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
@@ -552,6 +563,10 @@ class R9UlDlMatch():
                         if not os.path.exists("E:\\TEST_189\\UL\\"):
                             os.makedirs("E:\\TEST_189\\UL\\")
                         shutil.copy(current_file_loc,"E:\\TEST_189\\UL\\")
+                    if tmpfile[26:29] == '202':
+                        if not os.path.exists("E:\\TEST_202\\UL\\"):
+                            os.makedirs("E:\\TEST_202\\UL\\")
+                        shutil.copy(current_file_loc,"E:\\TEST_202\\UL\\")
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
