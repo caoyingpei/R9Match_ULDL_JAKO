@@ -1,0 +1,26 @@
+{
+	"R9_EXE_TYPE"         :  "DL",
+	"R9_UL_FILE_CONTENT"  :  "E:\\jako\\ulfile",
+	"R9_DL_FILE_EXIT"     :  "TRUE",
+	"R9_DL_FILE_CONTENT"  :  "E:\\jako\\dlfile",
+	"R9_RM_OLD_FILE_FLAG"  :  "TRUE",
+	"R9_RESULT_FILE_CONTENT" : "E:\\jako\\outputfile\\voice",
+	"R9_RESULT_FILE_CONTENT_BAK" : "E:\\jako\\outputfile_bak\\voice",
+	"R9_SPOT_BEAM_LIST" : ["202","189","172","000"],
+	"R9_C_SERVER_FOR_DOWNLOAD_FILE_CONTENT" : "E:\\jako\\outputfile_server\\",
+	
+	
+	
+	"R9_UL_DL_PERIOD"     :  300,
+	"R9_CHECK_PERIOD"     :  10,
+	"R9_MATCH_HOW_MANY_MIN_AGO" : 1,
+	"R9_CHECK_FILE_STATUS_PERIOD" : 100,
+	"R9_CHANGE_FILE_LOC_KB_THRES" : 3,
+	"R9_OPEN_FILE_FILTER_FLAG" : "FALSE",
+	"R9_OPEN_LOG_FLAG" : "FALSE",
+	"R9_RESULT_FILE_CONTENT_EMPTY" : "E:\\jako\\outputfile\\empty",
+	"R9_RESULT_FILE_CONTENT_SMS" : "E:\\jako\\outputfile\\sms",
+	"R9_RESULT_FILE_CONTENT_BAK_EMPTY" : "E:\\jako\\outputfile_bak\\empty",
+	"R9_RESULT_FILE_CONTENT_BAK_SMS" : "E:\\jako\\outputfile_bak\\sms"
+	
+}
