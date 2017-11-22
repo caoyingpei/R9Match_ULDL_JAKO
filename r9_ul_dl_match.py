@@ -11,6 +11,9 @@ import time
 import json
 import re
 import datetime
+import logging  
+import logging.config  
+  
 
 from progressbar import  ETA, ProgressBar, SimpleProgress, AbsoluteETA
     
@@ -33,6 +36,10 @@ class R9UlDlMatch():
         @1 读取配置文件
         '''
         print(json.dumps(cfg,indent = 4))
+        logging.config.fileConfig('./configFile/log.conf')  
+        self.logger = logging.getLogger('main')  
+        
+#         logger.info('start import module \'mod\'...')  
         self.r9_ul_file_content = cfg['R9_UL_FILE_CONTENT']
         self.r9_dl_file_exit_flag = cfg['R9_DL_FILE_EXIT']
         
@@ -240,6 +247,7 @@ class R9UlDlMatch():
  
                         
         except:
+            self.logger.error('FORMAT_ERROR %s %s'%(ulfile_Loc,dlfile_Loc))  
             print('[ERROR :] FORMAT_ERROR %s %s'%(ulfile_Loc,dlfile_Loc))
         fw.close()
         fd.close()
@@ -291,15 +299,6 @@ class R9UlDlMatch():
                     replace_header= split_header[1].replace(split_header[1][0:29],split_header[1][0:26]\
                                     +dlfile.rsplit('\\',1)[1][26:29])
                     
-                    
-                    
-                    
-#                     path = split_header[0]+'\\'+self.r9_get_year_month_day()
-#                     if not os.path.exists(path):
-#                         os.makedirs(path) 
-#                     remotfile = path+'\\'+replace_header
-                    
-
                     if not os.path.exists(path):
                         os.makedirs(path) 
                     if not os.path.exists(bak_path):
@@ -329,7 +328,7 @@ class R9UlDlMatch():
                             print('[WARNING] : {%s} is exsit'%remotfile)
                             pass
                         print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
-                    
+                        self.logger.info('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))  
                     try:
                         self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile_bak,UlFrameNum,DlFrameNum)
                         
@@ -339,6 +338,7 @@ class R9UlDlMatch():
                         shutil.copy(remotfile_bak,remotfile)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+                        self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile) 
                     if self.r9_rm_old_file_flag == 'TRUE':
                         os.remove(ulfile+'.jako')
                         os.remove(dlfile+'.jako')
@@ -382,6 +382,7 @@ class R9UlDlMatch():
         if not now_time - file_time > self.r9_match_how_many_min_ago *60:
             return False  
         if  filfile.count('#') <8:
+            self.logger.error('[ERROR :] FILE_NAME FORMAT ERROR [%s]'%filfile)
             print('[ERROR :] FILE_NAME FORMAT ERROR [%s]'%filfile)
             return False
         return True
@@ -466,6 +467,7 @@ class R9UlDlMatch():
                             shutil.move(current_file_loc,remotfile_bak)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+                            self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         f=open(remotfile,'w')
                         f.close()
@@ -478,6 +480,7 @@ class R9UlDlMatch():
                             shutil.move(current_file_loc,remotfile_bak)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+                            self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     
                 else:
                     try:
@@ -485,6 +488,7 @@ class R9UlDlMatch():
                         shutil.copy(current_file_loc,remotfile_bak)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+                        self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
     def r9_get_year_month_day(self):
         
         return '%04d%02d%02d'%(datetime.datetime.now().year,
@@ -574,6 +578,7 @@ class R9UlDlMatch():
                             shutil.move(current_file_loc,remotfile_bak)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
+                            self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         f=open(remotfile,'w')
                         f.close()
@@ -586,12 +591,14 @@ class R9UlDlMatch():
                             shutil.move(current_file_loc,remotfile_bak)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+                            self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                 else:
                     try:
                         shutil.copy(current_file_loc,remotfile)
                         shutil.copy(current_file_loc,remotfile_bak)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+                        self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
 #         pass
 
     def run(self):
@@ -599,7 +606,6 @@ class R9UlDlMatch():
             print('[INFO] : start match ul dl file')
             self.r9_ulfile_list=self.r9_get_ul_file()
 #             print(self.r9_ulfile_list)
-            
             
             self.r9_ullist_proc()
             
