@@ -22,6 +22,6 @@
 	"R9_RESULT_FILE_CONTENT_SMS" : "E:\\jako\\outputfile\\sms",
 	"R9_RESULT_FILE_CONTENT_BAK_EMPTY" : "E:\\jako\\outputfile_bak\\empty",
 	"R9_RESULT_FILE_CONTENT_BAK_SMS" : "E:\\jako\\outputfile_bak\\sms",
-	"R9_C_SERVER_FOR_DOWNLOAD_FILE_CONTENT" : "E:\\jako\\outputfile_server\\"
+	"R9_C_SERVER_FOR_DOWNLOAD_FILE_CONTENT" : "E:\\jako\\outputfile_server\\",
 	"R9_C_SERVER_FOR_DOWNLOAD_FILE_CONTENT_LOCAL_BAK" : "E:\\jako\\outputfile_server_bak\\"
 }

@@ -281,7 +281,7 @@ class R9UlDlMatch():
                 UlFrameNum= int(ultmpList[-1])
                 DlFrameNum= int(dltmpList[-1])
 #                 if (UlFrameNum - DlFrameNum) TOTAL_FRAME_NUM
-                if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period and abs(UlFrameNum - DlFrameNum+self.TOTAL_FRAME_NUM)>self.r9_ul_dl_period and abs(DlFrameNum - UlFrameNum +self.TOTAL_FRAME_NUM)>self.r9_ul_dl_period :
+                if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period and abs(DlFrameNum - UlFrameNum) +self.TOTAL_FRAME_NUM>self.r9_ul_dl_period :
                     pass
                 else:
                     tmpfile=ulfile.rsplit(os.sep)[-1]
@@ -339,6 +339,7 @@ class R9UlDlMatch():
                             print('[MATCHED] [202] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
                             shutil.copy(ulfile+'.jako',"E:\\TEST_202\\UL\\")
                             shutil.copy(dlfile+'.jako',"E:\\TEST_202\\DL\\")                                   
+                    
                     if self.r9_r9_open_log_flag == 'TRUE':
                         if os.path.exists(remotfile):
                             print('[WARNING] : {%s} is exsit'%remotfile)
@@ -494,12 +495,15 @@ class R9UlDlMatch():
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
-                        f=open(remotfile,'w')
-                        f.close()
-                        f=open(remotfile_bak,'w')
-                        f.close()
-                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
-                        os.remove(current_file_loc)
+                        try:
+                            f=open(remotfile,'w')
+                            f.close()
+                            f=open(remotfile_bak,'w')
+                            f.close()
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            os.remove(current_file_loc)
+                        except:
+                            print("[ERROR] DL FILE SAVE ERROR!")
                     else:
                         try:
                             shutil.copy(current_file_loc,remotfile)
@@ -599,6 +603,8 @@ class R9UlDlMatch():
                         if not os.path.exists("E:\\TEST_202\\UL\\"):
                             os.makedirs("E:\\TEST_202\\UL\\")
                         shutil.copy(current_file_loc,"E:\\TEST_202\\UL\\")
+                        
+                        
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
@@ -609,12 +615,15 @@ class R9UlDlMatch():
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
-                        f=open(remotfile,'w')
-                        f.close()
-                        f=open(remotfile_bak,'w')
-                        f.close()
-                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
-                        os.remove(current_file_loc)
+                        try:
+                            f=open(remotfile,'w')
+                            f.close()
+                            f=open(remotfile_bak,'w')
+                            f.close()
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            os.remove(current_file_loc)
+                        except:
+                            print('[ERROR] UL FILE SAVE ERROR',remotfile)   
                     else:
                         try:
                             shutil.copy(current_file_loc,remotfile)
@@ -656,6 +665,7 @@ class R9UlDlMatch():
                     print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
 #                     #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                 self.proc_count_len = self.proc_count_len+1
+                
                 self.r9_match_progress_bar_print(self.proc_count_len)
     def dl_download_file_proc(self):
         for file in self.r9_c_server_file_list:
@@ -683,13 +693,13 @@ class R9UlDlMatch():
             if tmpfile[26:29] in self.r9_spot_beam_list:
                 try:
                     shutil.move(file,remotfile)
-
                 except:
                     print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
 #                     #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
             else:
-                pass
+                os.remove(file) 
             self.proc_count_len = self.proc_count_len+1
+            print(self.proc_count_len)
             self.r9_match_progress_bar_print(self.proc_count_len)
     def run(self):
         while True:
@@ -721,12 +731,14 @@ class R9UlDlMatch():
                     self.r9_ul_file_save()
                     self.ulfile_dict= {}
             elif 'DL'==self.r9_exe_type:
+                self.dlfile_dict= {}
+                self.r9_c_server_file_list=[]
                 self.r9_c_server_file_list=self.r9_get_c_server_file()
                 self.r9_dlfile_list=self.r9_get_dl_file()
                 self.r9_dllist_proc()
+                self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
                 print(len(self.r9_c_server_file_list))
                 print(len(self.r9_dlfile_list))
-                self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
                 self.proc_count_len = 0
                 self.r9_progress_bar_init(self.total_list_len)
                 
@@ -734,6 +746,7 @@ class R9UlDlMatch():
                 self.dl_download_file_proc()
                 
                 self.r9_progress_bar_finish()
+                
             else:
                 print("UNKOWN EXE TYPE")
                 exit        
