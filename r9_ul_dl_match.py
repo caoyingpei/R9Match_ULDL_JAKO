@@ -56,6 +56,7 @@ class R9UlDlMatch():
         '''
         self.r9_ul_dl_period  = cfg['R9_UL_DL_PERIOD']
         self.r9_match_how_many_min_ago  = cfg['R9_MATCH_HOW_MANY_MIN_AGO']
+        self.r9_match_how_many_min_wait_for_match  = cfg['R9_MATCH_HOW_MANY_MIN_WAIT_FOR_MATCH']
         self.r9_check_period  = cfg['R9_CHECK_PERIOD']
         self.r9_check_file_status_period  = cfg['R9_CHECK_FILE_STATUS_PERIOD']
         self.r9_rm_old_file_flag = cfg['R9_RM_OLD_FILE_FLAG']
@@ -212,6 +213,8 @@ class R9UlDlMatch():
         ultail =  ulhead+self.r9_get_voice_file_total_framenum(ulfile_Loc)//2
         dltail  = dlhead+self.r9_get_voice_file_total_framenum(dlfile_Loc)//2
         
+#         print(dlhead,'-',dltail)
+#         print(ultail,'-',ulhead)
         
         totol_frame_num = 0
         if dltail> ultail:
@@ -230,33 +233,53 @@ class R9UlDlMatch():
                 if i < dlhead or i>dltail-1:
                     fw.write(b'\x01')
                 else:
+                    
                     read_byte = fd.read(1)
                     read_result = struct.unpack('B',read_byte)[0]
+                    if read_result%2==1:
                     # 第二个比特 为0 
-                    fw.write(read_byte)
-                    if read_result%4>1:
-                        fw.write(fd.read(26))
+                        fw.write(read_byte)
+                        if read_result%4>1:
+                            fw.write(fd.read(26))
+                        read_byte=fd.read(1)  
+                        read_result = struct.unpack('B',read_byte)[0]  
+                        if read_result%4>1:
+                            fd.read(26)     
+                    else:
                         
-                    read_byte = fd.read(1)
-                    read_result = struct.unpack('B',read_byte)[0]
-                    # 第二个比特 为0 
-                    if read_result%4>1:
-                        fd.read(26)   
-                
+                        if read_result%4>1:
+                            fd.read(26)   
+                        read_byte=fd.read(1) 
+                        
+                        fw.write(read_byte)
+                        read_result = struct.unpack('B',read_byte)[0]
+                        if read_result%4>1:
+                            fw.write(fd.read(26))
+                           
+        
                 if i < ulhead or i>ultail-1:
                     fw.write(b'\x00')
                 else:
                     read_byte = fu.read(1)
                     read_result = struct.unpack('B',read_byte)[0]
-                    if read_result%4>1:
-                        fu.read(26)
-                    
-                    read_byte = fu.read(1)
-                    read_result = struct.unpack('B',read_byte)[0]
+                    if read_result%2==0:
                     # 第二个比特 为0 
-                    fw.write(read_byte)
-                    if read_result%4>1:
-                        fw.write(fu.read(26))
+                        fw.write(read_byte)
+                        if read_result%4>1:
+                            fw.write(fu.read(26))
+                        read_byte=fu.read(1)    
+                        read_result = struct.unpack('B',read_byte)[0]
+                        if read_result%4>1:
+                            fu.read(26)    
+                    else:
+                        if read_result%4>1:
+                            fu.read(26)   
+                        read_byte=fu.read(1) 
+                        fw.write(read_byte)
+                        read_result = struct.unpack('B',read_byte)[0]
+                        if read_result%4>1:
+                            fw.write(fu.read(26))
+
  
                         
         except:
@@ -282,8 +305,11 @@ class R9UlDlMatch():
                 DlFrameNum= int(dltmpList[-1])
 #                 if (UlFrameNum - DlFrameNum) TOTAL_FRAME_NUM
                 if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period and abs(DlFrameNum - UlFrameNum) +self.TOTAL_FRAME_NUM>self.r9_ul_dl_period :
+#                     print("ERROR")
+#                 if 0:
                     pass
                 else:
+#                     print("PASS")
                     tmpfile=ulfile.rsplit(os.sep)[-1]
                     tmpfile = tmpfile.replace(tmpfile[0:33],tmpfile[0:29]+'FFFF')
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
@@ -347,6 +373,7 @@ class R9UlDlMatch():
                         print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
                         self.logger.info('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))  
                     try:
+#                         print(UlFrameNum,'-',DlFrameNum)
                         self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile_bak,UlFrameNum,DlFrameNum)
                         
                         if 1==int(tep[len(tep)-2])//128:
@@ -392,6 +419,13 @@ class R9UlDlMatch():
         if not now_time - file_time > self.r9_match_how_many_min_ago *60:
             return False 
         else:
+            return True    
+    def r9_match_time_filter(self,filfile):
+        file_time = os.path.getctime(filfile)
+        now_time = time.time()
+        if not now_time - file_time > self.r9_match_how_many_min_wait_for_match *60:
+            return False 
+        else:
             return True        
     def r9_file_filter(self,filfile):
         '''
@@ -419,6 +453,10 @@ class R9UlDlMatch():
         for key in self.dlfile_dict.keys():
             for i in range(len(self.dlfile_dict[key])):
                 current_file_loc = self.dlfile_dict[key][i]
+                if False == self.r9_match_time_filter(current_file_loc):
+                    self.proc_count_len = self.proc_count_len+1
+                    self.r9_match_progress_bar_print(self.proc_count_len)  
+                    continue
                 tmpfile=self.dlfile_dict[key][i].rsplit(os.sep)[-1].rsplit('.')[0]
                 file_size = os.path.getsize(current_file_loc)/1024
                 
@@ -488,9 +526,9 @@ class R9UlDlMatch():
                 if self.r9_rm_old_file_flag == 'TRUE' :
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
-                            shutil.copy(current_file_loc,remotfile)
-                            shutil.copy(current_file_loc,self.r9_c_server_for_download_file_content)
-                            shutil.move(current_file_loc,remotfile_bak)
+                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -506,18 +544,18 @@ class R9UlDlMatch():
                             print("[ERROR] DL FILE SAVE ERROR!")
                     else:
                         try:
-                            shutil.copy(current_file_loc,remotfile)
-                            shutil.copy(current_file_loc,self.r9_c_server_for_download_file_content)
-                            shutil.move(current_file_loc,remotfile_bak)
+                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     
                 else:
                     try:
-                        shutil.copy(current_file_loc,remotfile)
-                        shutil.copy(current_file_loc,self.r9_c_server_for_download_file_content)
                         shutil.copy(current_file_loc,remotfile_bak)
+                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                        shutil.copy(current_file_loc,remotfile)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                         #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -534,6 +572,10 @@ class R9UlDlMatch():
         for key in self.ulfile_dict.keys():
             for i in range(len(self.ulfile_dict[key])):
                 current_file_loc = self.ulfile_dict[key][i]
+                if False == self.r9_match_time_filter(current_file_loc):
+                    self.proc_count_len = self.proc_count_len+1
+                    self.r9_match_progress_bar_print(self.proc_count_len)  
+                    continue
                 tmpfile=self.ulfile_dict[key][i].rsplit('.')[0].rsplit(os.sep)[-1]
                 
                 
@@ -608,9 +650,9 @@ class R9UlDlMatch():
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
-                            shutil.copy(current_file_loc,remotfile)
-                            shutil.copy(current_file_loc,self.r9_c_server_for_download_file_content)
-                            shutil.move(current_file_loc,remotfile_bak)
+                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -626,17 +668,17 @@ class R9UlDlMatch():
                             print('[ERROR] UL FILE SAVE ERROR',remotfile)   
                     else:
                         try:
-                            shutil.copy(current_file_loc,remotfile)
-                            shutil.copy(current_file_loc,self.r9_c_server_for_download_file_content)
-                            shutil.move(current_file_loc,remotfile_bak)
+                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                 else:
                     try:
-                        shutil.copy(current_file_loc,remotfile)
-                        shutil.copy(current_file_loc,self.r9_c_server_for_download_file_content)
                         shutil.copy(current_file_loc,remotfile_bak)
+                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                        shutil.copy(current_file_loc,remotfile)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                         #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
