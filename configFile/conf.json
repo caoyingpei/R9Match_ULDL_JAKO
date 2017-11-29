@@ -1,5 +1,5 @@
 {
-	"R9_EXE_TYPE"         :  "UL",
+	"R9_EXE_TYPE"         :  "DL",
 	"R9_UL_FILE_CONTENT"  :  "E:\\jako\\ulfile",
 	"R9_DL_FILE_EXIT"     :  "TRUE",
 	"R9_DL_FILE_CONTENT"  :  "E:\\jako\\dlfile",
@@ -8,6 +8,7 @@
 	"R9_RESULT_FILE_CONTENT_BAK" : "E:\\jako\\outputfile_bak\\voice",
 	"R9_SPOT_BEAM_LIST" : [202,189,172],
 	
+	"R9_SCP" : {"IP" : "127.0.0.1","PORT" : 18990,"USERNAME" : "jy","PASSWORD" : "wics"},
 	
 	
 	

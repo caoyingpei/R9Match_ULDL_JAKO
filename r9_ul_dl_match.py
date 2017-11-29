@@ -11,13 +11,14 @@ import time
 import json
 import re
 import datetime
-import logging  
-import logging.config  
-  
+# import logging  
+# import logging.config  
+from scp_send import *  
 
 from progressbar import  ETA, ProgressBar, SimpleProgress, AbsoluteETA
     
 from ctypes import cdll
+from win32netcon import PASSWORD_EXPIRED
 _sopen = cdll.msvcrt._sopen
 _close = cdll.msvcrt._close
 _SH_DENYRW = 0x10
@@ -29,15 +30,16 @@ class R9UlDlMatch():
 
     whitelist = ['jako','txt']
     TOTAL_FRAME_NUM = 313344
-    
+    C_RESULT_CONTENT = 'RESULT'
+    L_DLFILE_CONTENT = 'DLFILE'
     
     def __init__(self, cfg):
         '''
         @1 读取配置文件
         '''
         print(json.dumps(cfg,indent = 4))
-        logging.config.fileConfig('./configFile/log.conf')  
-        self.logger = logging.getLogger('main')  
+#         logging.config.fileConfig('./configFile/log.conf')  
+#         self.logger = logging.getLogger('main')  
         
 #         logger.info('start import module \'mod\'...')  
         self.r9_ul_file_content = cfg['R9_UL_FILE_CONTENT']
@@ -76,8 +78,96 @@ class R9UlDlMatch():
         self.r9_spot_beam_list = cfg['R9_SPOT_BEAM_LIST']
         self.ulfile_dict = {} 
         self.dlfile_dict = {} 
-        
         self.total_list_len = 0
+        try:
+            self.r9_scp = cfg['R9_SCP']
+        except:
+            pass
+        if 'DL'==self.r9_exe_type:
+            self.r9_scp_init()
+    def r9_scp_init(self):
+        self._fl=scp(self.r9_scp['IP'],self.r9_scp['PORT'],self.r9_scp['USERNAME'],self.r9_scp['PASSWORD'])
+        dir_list = self._fl.scp_list_dir()
+        if not self.C_RESULT_CONTENT in dir_list :
+            self._fl.scp_mkdir(self.C_RESULT_CONTENT)
+        if not self.L_DLFILE_CONTENT in dir_list:    
+            self._fl.scp_mkdir(self.L_DLFILE_CONTENT)
+    def r9_scp_get_c_file_list(self):
+        file_list = []
+        remotelist = self._fl.scp_attr(self.C_RESULT_CONTENT)
+        now_time = time.time()
+        for file in remotelist:
+            file_time = file.st_atime
+            if now_time - file_time > self.r9_match_how_many_min_ago *60:
+                file_list.append(self.C_RESULT_CONTENT+'\\'+file.filename)
+                
+        return file_list
+              
+    def r9_scp_download_file(self):
+        for file in self.r9_c_server_file_list:
+#                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
+            tmpfile=file.rsplit(os.sep)[-1].rsplit('.')[0]
+            Suffix = file.rsplit(os.sep)[-1].rsplit('.')[-1]
+            if not os.path.exists(self.r9_ul_file_content+'\\sms\\'):
+                os.makedirs(self.r9_ul_file_content+'\\sms\\')
+            if not os.path.exists(self.r9_ul_file_content+'\\lu\\'):
+                os.makedirs(self.r9_ul_file_content+'\\lu\\')
+            if not os.path.exists(self.r9_ul_file_content+'\\jako\\'):
+                os.makedirs(self.r9_ul_file_content+'\\jako\\')
+            if Suffix == 'txt':
+                if tmpfile[1]=='s' or tmpfile[1] == 'S':
+                    remotfile = self.r9_ul_file_content+'\\sms\\'+tmpfile+'.'+Suffix
+                else:
+                    remotfile = self.r9_ul_file_content+'\\lu\\'+tmpfile+'.'+Suffix
+                
+            elif Suffix == 'jako':
+                remotfile = self.r9_ul_file_content+'\\jako\\'+tmpfile+'.'+Suffix
+            else:
+                print('[FILE]->%D FORMAT ERROR',file)
+                #self.logger.error('[FILE]->%D FORMAT ERROR',file)    
+            
+            if tmpfile[26:29] in self.r9_spot_beam_list:
+                try:
+                    self._fl.scp_get(file, remotfile)
+                    self._fl.scp_rm_file(file)
+                except:
+                    print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+#                     #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+            else:
+                try:
+                    self._fl.scp_rm_file(file)
+                except:
+                    pass
+#                 pass
+            self.proc_count_len = self.proc_count_len+1
+#             print(self.proc_count_len)
+            self.r9_match_progress_bar_print(self.proc_count_len)    
+    def r9_scp_upload_file(self):
+        for key in self.dlfile_dict.keys():
+            for i in range(len(self.dlfile_dict[key])):
+                current_file_loc = self.dlfile_dict[key][i]
+                tmpfile=self.dlfile_dict[key][i].rsplit(os.sep)[-1].rsplit('.')[0]
+                if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                    remotfile = self.L_DLFILE_CONTENT+'\\'+tmpfile+'.txt'
+                    remotfile_bak = self.r9_result_file_content_bak+'\\'+tmpfile+'.txt'
+                else:
+                    remotfile = self.L_DLFILE_CONTENT+'\\'+tmpfile+'.jako'
+                    remotfile_bak = self.r9_result_file_content_bak+'\\'+tmpfile+'.jako'
+                try:
+                    shutil.copy(current_file_loc,remotfile_bak)
+                    self._fl.scp_put(remotfile,current_file_loc)
+                    os.remove(current_file_loc)
+                except:
+                    print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+#                     #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
+#                 print(remotfile)
+#                 self._fl.scp_put(remotfile,current_file_loc)
+                
+                
+                self.proc_count_len = self.proc_count_len+1
+                
+                self.r9_match_progress_bar_print(self.proc_count_len)        
+            
     def is_open(self,file_name):
         if not self.r9_r9_open_file_filter_flag=='TRUE':
             return False
@@ -772,10 +862,28 @@ class R9UlDlMatch():
                 else:
                     self.r9_ul_file_save()
                     self.ulfile_dict= {}
+#             elif 'DL'==self.r9_exe_type:
+#                 self.dlfile_dict= {}
+#                 self.r9_c_server_file_list=[]
+#                 self.r9_c_server_file_list=self.r9_get_c_server_file()
+#                 self.r9_dlfile_list=self.r9_get_dl_file()
+#                 self.r9_dllist_proc()
+#                 self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
+#                 print(len(self.r9_c_server_file_list))
+#                 print(len(self.r9_dlfile_list))
+#                 self.proc_count_len = 0
+#                 self.r9_progress_bar_init(self.total_list_len)
+#                 
+#                 self.dl_upload_file_proc()
+#                 self.dl_download_file_proc()
+#                 
+#                 self.r9_progress_bar_finish()
             elif 'DL'==self.r9_exe_type:
+                pass
                 self.dlfile_dict= {}
+                 
                 self.r9_c_server_file_list=[]
-                self.r9_c_server_file_list=self.r9_get_c_server_file()
+                self.r9_c_server_file_list=self.r9_scp_get_c_file_list()
                 self.r9_dlfile_list=self.r9_get_dl_file()
                 self.r9_dllist_proc()
                 self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
@@ -783,12 +891,11 @@ class R9UlDlMatch():
                 print(len(self.r9_dlfile_list))
                 self.proc_count_len = 0
                 self.r9_progress_bar_init(self.total_list_len)
-                
-                self.dl_upload_file_proc()
-                self.dl_download_file_proc()
-                
-                self.r9_progress_bar_finish()
-                
+                 
+                self.r9_scp_upload_file()
+                self.r9_scp_download_file()
+                 
+                self.r9_progress_bar_finish()    
             else:
                 print("UNKOWN EXE TYPE")
                 exit        
