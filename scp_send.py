@@ -41,20 +41,21 @@ class scp():
                 print('[error] ->scp_get')
                 self._connect()
     def scp_attr(self,content):
-        return self._sftp.listdir_attr(content)
-#         while True:
-#             try:
-#                 return self._sftp.listdir_attr(content)
-#     #             break
-#             except:
-#                 print('[error] ->scp_attr')
-#                 self._connect()
-    def scp_list_dir(self):   
-#         try:     
-        return self._sftp.listdir(path='.')
-#         except:
-#             print('[error] ->scp_list_dir')
-#             self._connect()
+#         return self._sftp.listdir_attr(content)
+        while True:
+            try:
+                return self._sftp.listdir_attr(content)
+    #             break
+            except:
+                print('[error] ->scp_attr')
+                self._connect()
+    def scp_list_dir(self):
+        while True:   
+            try:     
+                return self._sftp.listdir(path='.')
+            except:
+                print('[error] ->scp_list_dir')
+                self._connect()
     def scp_rm_file(self,file):
         self._sftp.remove(file)
     def scp_mkdir(self,content):

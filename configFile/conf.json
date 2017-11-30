@@ -6,7 +6,7 @@
 	"R9_RM_OLD_FILE_FLAG"  :  "TRUE",
 	"R9_RESULT_FILE_CONTENT" : "E:\\jako\\outputfile\\voice",
 	"R9_RESULT_FILE_CONTENT_BAK" : "E:\\jako\\outputfile_bak\\voice",
-	"R9_SPOT_BEAM_LIST" : [202,189,172],
+	"R9_SPOT_BEAM_LIST" : ["202","189","172"],
 	
 	"R9_SCP" : {"IP" : "127.0.0.1","PORT" : 18990,"USERNAME" : "jy","PASSWORD" : "wics"},
 	

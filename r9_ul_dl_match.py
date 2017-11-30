@@ -96,9 +96,12 @@ class R9UlDlMatch():
         file_list = []
         remotelist = self._fl.scp_attr(self.C_RESULT_CONTENT)
         now_time = time.time()
+        print(now_time)
         for file in remotelist:
+            
             file_time = file.st_atime
-            if now_time - file_time > self.r9_match_how_many_min_ago *60:
+            print(file_time)
+            if now_time - file_time > self.r9_match_how_many_min_ago *10:
                 file_list.append(self.C_RESULT_CONTENT+'\\'+file.filename)
                 
         return file_list
@@ -126,6 +129,7 @@ class R9UlDlMatch():
                 print('[FILE]->%D FORMAT ERROR',file)
                 #self.logger.error('[FILE]->%D FORMAT ERROR',file)    
             
+#             print()
             if tmpfile[26:29] in self.r9_spot_beam_list:
                 try:
                     self._fl.scp_get(file, remotfile)
@@ -438,24 +442,44 @@ class R9UlDlMatch():
                     remotfile = path+'\\'+replace_header
                     remotfile_bak = bak_path+'\\'+replace_header 
 #  TODO :TO BE DELETE
+                    LIST_FLAG =0
                     if 1:
-                        if tmpfile[26:29] == '189':
-                            if not os.path.exists("E:\\TEST_189\\UL\\"):
-                                os.makedirs("E:\\TEST_189\\UL\\")
-                            if not os.path.exists("E:\\TEST_189\\DL\\"):
-                                os.makedirs("E:\\TEST_189\\DL\\")
-                            print('[MATCHED] [189] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
-                            shutil.copy(ulfile+'.jako',"E:\\TEST_189\\UL\\")
-                            shutil.copy(dlfile+'.jako',"E:\\TEST_189\\DL\\")
-                        if tmpfile[26:29] == '202':
-                            if not os.path.exists("E:\\TEST_202\\UL\\"):
-                                os.makedirs("E:\\TEST_202\\UL\\")
-                            if not os.path.exists("E:\\TEST_202\\DL\\"):
-                                os.makedirs("E:\\TEST_202\\DL\\")
-                            print('[MATCHED] [202] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
-                            shutil.copy(ulfile+'.jako',"E:\\TEST_202\\UL\\")
-                            shutil.copy(dlfile+'.jako',"E:\\TEST_202\\DL\\")                                   
-                    
+                        if tmpfile[26:29] == '208':
+                            LIST_FLAG =1
+                            if not os.path.exists("D:\\TEST_208\\UL\\"):
+                                os.makedirs("D:\\TEST_208\\UL\\")
+                            if not os.path.exists("D:\\TEST_208\\DL\\"):
+                                os.makedirs("D:\\TEST_208\\DL\\")
+                            print('[MATCHED] [208] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            shutil.copy(ulfile+'.jako',"D:\\TEST_208\\UL\\")
+                            shutil.copy(dlfile+'.jako',"D:\\TEST_208\\DL\\")
+                        if tmpfile[26:29] == '209':
+                            LIST_FLAG =1
+                            if not os.path.exists("D:\\TEST_209\\UL\\"):
+                                os.makedirs("D:\\TEST_209\\UL\\")
+                            if not os.path.exists("D:\\TEST_209\\DL\\"):
+                                os.makedirs("D:\\TEST_209\\DL\\")
+                            print('[MATCHED] [209] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            shutil.copy(ulfile+'.jako',"D:\\TEST_209\\UL\\")
+                            shutil.copy(dlfile+'.jako',"D:\\TEST_209\\DL\\")                                   
+                        if tmpfile[26:29] == '217':
+                            LIST_FLAG =1
+                            if not os.path.exists("D:\\TEST_217\\UL\\"):
+                                os.makedirs("D:\\TEST_217\\UL\\")
+                            if not os.path.exists("D:\\TEST_217\\DL\\"):
+                                os.makedirs("D:\\TEST_217\\DL\\")
+                            print('[MATCHED] [217] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            shutil.copy(ulfile+'.jako',"D:\\TEST_217\\UL\\")
+                            shutil.copy(dlfile+'.jako',"D:\\TEST_217\\DL\\")    
+                        if tmpfile[26:29] == '218':
+                            LIST_FLAG =1
+                            if not os.path.exists("D:\\TEST_218\\UL\\"):
+                                os.makedirs("D:\\TEST_218\\UL\\")
+                            if not os.path.exists("D:\\TEST_218\\DL\\"):
+                                os.makedirs("D:\\TEST_218\\DL\\")
+                            print('[MATCHED] [218] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
+                            shutil.copy(ulfile+'.jako',"D:\\TEST_218\\UL\\")
+                            shutil.copy(dlfile+'.jako',"D:\\TEST_218\\DL\\")                        
                     if self.r9_r9_open_log_flag == 'TRUE':
                         if os.path.exists(remotfile):
                             print('[WARNING] : {%s} is exsit'%remotfile)
@@ -470,7 +494,8 @@ class R9UlDlMatch():
                             f=open(remotfile_bak,'w')
                             f.close()
                         shutil.copy(remotfile_bak,remotfile)
-                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                        if LIST_FLAG ==1:
+                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                         #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile) 
@@ -506,7 +531,7 @@ class R9UlDlMatch():
     def r9_just_time_filter(self,filfile):
         file_time = os.path.getctime(filfile)
         now_time = time.time()
-        if not now_time - file_time > self.r9_match_how_many_min_ago *60:
+        if not now_time - file_time > self.r9_match_how_many_min_ago *10:
             return False 
         else:
             return True    
@@ -528,7 +553,7 @@ class R9UlDlMatch():
 
         file_time = os.path.getctime(filfile)
         now_time = time.time()
-        if not now_time - file_time > self.r9_match_how_many_min_ago *60:
+        if not now_time - file_time > self.r9_match_how_many_min_ago *10:
             return False  
         if  filfile.count('#') <8:
             #self.logger.error('[ERROR :] FILE_NAME FORMAT ERROR [%s]'%filfile)
@@ -603,21 +628,34 @@ class R9UlDlMatch():
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)
 #  TODO :TO BE DELETE                
+                LIST_FLAG = 0 
                 if 1:
-                    if tmpfile[26:29] == '189':
-                        if not os.path.exists("E:\\TEST_189\\DL\\"):
-                            os.makedirs("E:\\TEST_189\\DL\\")
-                        shutil.copy(current_file_loc,"E:\\TEST_189\\DL\\")
-                    if tmpfile[26:29] == '202':
-                        if not os.path.exists("E:\\TEST_202\\DL\\"):
-                            os.makedirs("E:\\TEST_202\\DL\\")
-                        shutil.copy(current_file_loc,"E:\\TEST_202\\DL\\")
-                                    
+                    if tmpfile[26:29] == '208':
+                        LIST_FLAG =1
+                        if not os.path.exists("D:\\TEST_208\\DL\\"):
+                            os.makedirs("D:\\TEST_208\\DL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_208\\DL\\")
+                    if tmpfile[26:29] == '209':
+                        LIST_FLAG =1
+                        if not os.path.exists("D:\\TEST_209\\DL\\"):
+                            os.makedirs("D:\\TEST_209\\DL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_209\\DL\\")
+                    if tmpfile[26:29] == '217':
+                        LIST_FLAG =1
+                        if not os.path.exists("D:\\TEST_217\\DL\\"):
+                            os.makedirs("D:\\TEST_217\\DL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_217\\DL\\")                
+                    if tmpfile[26:29] == '218':
+                        LIST_FLAG =1
+                        if not os.path.exists("D:\\TEST_218\\DL\\"):
+                            os.makedirs("D:\\TEST_218\\DL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_218\\DL\\")                          
                 if self.r9_rm_old_file_flag == 'TRUE' :
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            if LIST_FLAG ==1:
+                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -628,14 +666,16 @@ class R9UlDlMatch():
                             f.close()
                             f=open(remotfile_bak,'w')
                             f.close()
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            if LIST_FLAG ==1:
+                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                             os.remove(current_file_loc)
                         except:
                             print("[ERROR] DL FILE SAVE ERROR!")
                     else:
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            if LIST_FLAG ==1:
+                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -725,23 +765,36 @@ class R9UlDlMatch():
                     print('->',remotfile)
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)  
-#  TODO :TO BE DELETE                
+#  TODO :TO BE DELETE
+                LIST_FLAG = 0                
                 if 1:
-                    if tmpfile[26:29] == '189':
-                        if not os.path.exists("E:\\TEST_189\\UL\\"):
-                            os.makedirs("E:\\TEST_189\\UL\\")
-                        shutil.copy(current_file_loc,"E:\\TEST_189\\UL\\")
-                    if tmpfile[26:29] == '202':
-                        if not os.path.exists("E:\\TEST_202\\UL\\"):
-                            os.makedirs("E:\\TEST_202\\UL\\")
-                        shutil.copy(current_file_loc,"E:\\TEST_202\\UL\\")
-                        
+                    if tmpfile[26:29] == '208':
+                        LIST_FLAG=1
+                        if not os.path.exists("D:\\TEST_208\\UL\\"):
+                            os.makedirs("D:\\TEST_208\\UL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_208\\UL\\")
+                    if tmpfile[26:29] == '209':
+                        LIST_FLAG=1
+                        if not os.path.exists("D:\\TEST_209\\UL\\"):
+                            os.makedirs("D:\\TEST_209\\UL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_209\\UL\\")
+                    if tmpfile[26:29] == '217':
+                        LIST_FLAG=1
+                        if not os.path.exists("D:\\TEST_217\\UL\\"):
+                            os.makedirs("D:\\TEST_217\\UL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_217\\UL\\")
+                    if tmpfile[26:29] == '218':
+                        LIST_FLAG=1
+                        if not os.path.exists("D:\\TEST_218\\UL\\"):
+                            os.makedirs("D:\\TEST_218\\UL\\")
+                        shutil.copy(current_file_loc,"D:\\TEST_218\\UL\\")                        
                         
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            if LIST_FLAG==1:
+                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
@@ -752,14 +805,16 @@ class R9UlDlMatch():
                             f.close()
                             f=open(remotfile_bak,'w')
                             f.close()
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            if LIST_FLAG==1:
+                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                             os.remove(current_file_loc)
                         except:
                             print('[ERROR] UL FILE SAVE ERROR',remotfile)   
                     else:
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            if LIST_FLAG==1:
+                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -835,7 +890,7 @@ class R9UlDlMatch():
             self.r9_match_progress_bar_print(self.proc_count_len)
     def run(self):
         while True:
-            print('[INFO] : start match ul dl file')
+            print('%s [INFO] : start match ul dl file'%(time.ctime()))
 
             
             '''
