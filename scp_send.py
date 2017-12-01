@@ -49,21 +49,24 @@ class scp():
             except:
                 print('[error] ->scp_attr')
                 self._connect()
-    def scp_list_dir(self):
+    def scp_list_dir(self,path='.'):
         while True:   
             try:     
-                return self._sftp.listdir(path='.')
+                return self._sftp.listdir(path)
             except:
                 print('[error] ->scp_list_dir')
                 self._connect()
     def scp_rm_file(self,file):
         self._sftp.remove(file)
     def scp_mkdir(self,content):
-        try:     
-            self._sftp.mkdir(content)
-        except:
-            print('[error] ->scp_mkdir')
-            self._connect()
+#         print(content)
+        while True:
+            try:     
+                self._sftp.mkdir(content)
+                break 
+            except:
+                print('[error] ->scp_mkdir')
+                self._connect()
     def scp_put(self,remote_path,local_path):
         src = remote_path 
         des = local_path

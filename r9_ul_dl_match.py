@@ -84,7 +84,9 @@ class R9UlDlMatch():
         except:
             pass
         if 'DL'==self.r9_exe_type:
+            self.r9_middle_station_name = cfg['R9_MIDDLE_STATION_NAME']
             self.r9_scp_init()
+            
     def r9_scp_init(self):
         self._fl=scp(self.r9_scp['IP'],self.r9_scp['PORT'],self.r9_scp['USERNAME'],self.r9_scp['PASSWORD'])
         dir_list = self._fl.scp_list_dir()
@@ -92,18 +94,29 @@ class R9UlDlMatch():
             self._fl.scp_mkdir(self.C_RESULT_CONTENT)
         if not self.L_DLFILE_CONTENT in dir_list:    
             self._fl.scp_mkdir(self.L_DLFILE_CONTENT)
+    
+    def r9_mk_sub_dir(self):
+        dir_list = self._fl.scp_list_dir(self.C_RESULT_CONTENT)
+        if not self.r9_middle_station_name in dir_list:
+            self._fl.scp_mkdir(self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name)
+        dir_list =self._fl.scp_list_dir(self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name)
+        for spot_beam in self.r9_spot_beam_list:
+            if not spot_beam in dir_list:
+                self._fl.scp_mkdir(self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name+'//'+spot_beam)
+    
     def r9_scp_get_c_file_list(self):
         file_list = []
-        remotelist = self._fl.scp_attr(self.C_RESULT_CONTENT)
         now_time = time.time()
         print(now_time)
-        for file in remotelist:
-            
-            file_time = file.st_atime
-            print(file_time)
-            if now_time - file_time > self.r9_match_how_many_min_ago *10:
-                file_list.append(self.C_RESULT_CONTENT+'\\'+file.filename)
-                
+        sub_content = self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name
+        for spot_beam in self.r9_spot_beam_list:
+            spot_beam_content = sub_content+'//'+spot_beam
+            remotelist = self._fl.scp_attr(spot_beam_content)
+            for file in remotelist:
+                file_time = file.st_atime
+                print(file_time)
+                if now_time - file_time > self.r9_match_how_many_min_ago *10:
+                    file_list.append(spot_beam_content+'//'+file.filename)
         return file_list
               
     def r9_scp_download_file(self):
@@ -256,7 +269,7 @@ class R9UlDlMatch():
             else:
                 self.dlfile_dict[key] =[cut_file] 
                 
-    def r9_get_voice_file_total_framenum(self,file):
+    def r9_get_voice_file_total_framenum(self,file,uLdLtype):
         total_framenum = 0
         fp = open(file,'rb')
         try:
@@ -264,12 +277,43 @@ class R9UlDlMatch():
             while True:
                 read_result = struct.unpack('B',fp.read(1))[0]
                 # 第二个比特 为0 
+                if read_result%2==0 and uLdLtype == 'UL':
+                    total_framenum = total_framenum+1
+                elif read_result%2==1 and uLdLtype == 'DL':
+                    total_framenum = total_framenum+1
                 if read_result%4>1:
                     fp.read(26)
-                total_framenum = total_framenum+1
+#                 if type == 'UL':
+#                     total_framenum = total_framenum+1
         except:
             fp.close()
         return  total_framenum
+    def r9_copy_to_middle_station(self,file,spot_beam_id):
+#         print(self.r9_c_server_for_download_file_content)
+        for dir in os.listdir(self.r9_c_server_for_download_file_content):
+#             print(dir)
+            if os.path.isdir(self.r9_c_server_for_download_file_content+'//'+dir):
+                for sub_dir in os.listdir(self.r9_c_server_for_download_file_content+'//'+dir):
+#                     print(sub_dir)
+                    if sub_dir == spot_beam_id:
+                        shutil.copy(file,self.r9_c_server_for_download_file_content+'//'+dir+'//'+sub_dir)
+    def r9_rm_middle_station_time_out_dir(self):
+#         print(self.r9_c_server_for_download_file_content)
+        for dir in os.listdir(self.r9_c_server_for_download_file_content):
+#             print(dir)
+#             filenames = os.walk(self.r9_c_server_for_download_file_content+'//'+dir)[2]
+            totalFileCount = sum([len(files) for root, dirs, files in os.walk(self.r9_c_server_for_download_file_content+'//'+dir)])
+            print('CNT = %d | %s'%(totalFileCount,self.r9_c_server_for_download_file_content+'//'+dir))
+            if totalFileCount>300:
+                shutil.rmtree(self.r9_c_server_for_download_file_content+'//'+dir)
+#             if os.path.isdir(self.r9_c_server_for_download_file_content+'//'+dir):
+#                 for sub_dir in os.listdir(self.r9_c_server_for_download_file_content+'//'+dir):
+# #                     print(sub_dir)
+#                     if sub_dir == spot_beam_id:
+#                         shutil.copy(file,self.r9_c_server_for_download_file_content+'//'+dir+'//'+sub_dir)
+                     
+        
+        
         
     def r9_voice_merge(self,ulfile_Loc,dlfile_Loc,remoteefile_Loc,UlFrameNum,DlFrameNum):
         
@@ -304,8 +348,8 @@ class R9UlDlMatch():
             dlhead = -cnt 
             ulhead = 0    
         
-        ultail =  ulhead+self.r9_get_voice_file_total_framenum(ulfile_Loc)//2
-        dltail  = dlhead+self.r9_get_voice_file_total_framenum(dlfile_Loc)//2
+        ultail =  ulhead+self.r9_get_voice_file_total_framenum(ulfile_Loc,'UL')
+        dltail  = dlhead+self.r9_get_voice_file_total_framenum(dlfile_Loc,'DL')
         
 #         print(dlhead,'-',dltail)
 #         print(ultail,'-',ulhead)
@@ -327,52 +371,48 @@ class R9UlDlMatch():
                 if i < dlhead or i>dltail-1:
                     fw.write(b'\x01')
                 else:
-                    
-                    read_byte = fd.read(1)
-                    read_result = struct.unpack('B',read_byte)[0]
-                    if read_result%2==1:
-                    # 第二个比特 为0 
-                        fw.write(read_byte)
-                        if read_result%4>1:
-                            fw.write(fd.read(26))
-                        read_byte=fd.read(1)  
-                        read_result = struct.unpack('B',read_byte)[0]  
-                        if read_result%4>1:
-                            fd.read(26)     
-                    else:
-                        
-                        if read_result%4>1:
-                            fd.read(26)   
-                        read_byte=fd.read(1) 
-                        
-                        fw.write(read_byte)
+                    while True:
+                        read_byte = fd.read(1)
                         read_result = struct.unpack('B',read_byte)[0]
-                        if read_result%4>1:
-                            fw.write(fd.read(26))
+                        if read_result%2==1:
+                        # 第二个比特 为0 
+                            fw.write(read_byte)
+                            if read_result%4>1:
+                                fw.write(fd.read(26))
+                            break
+                        else:
+                            if read_result%4>1:
+                                fd.read(26)
+#                         read_byte=fd.read(1)  
+#                         read_result = struct.unpack('B',read_byte)[0]  
+#                         if read_result%4>1:
+#                             fd.read(26)     
+#                     else:
+#                         if read_result%4>1:
+#                             fd.read(26)   
+#                         read_byte=fd.read(1) 
+#                         
+#                         fw.write(read_byte)
+#                         read_result = struct.unpack('B',read_byte)[0]
+#                         if read_result%4>1:
+#                             fw.write(fd.read(26))
                            
         
                 if i < ulhead or i>ultail-1:
                     fw.write(b'\x00')
                 else:
-                    read_byte = fu.read(1)
-                    read_result = struct.unpack('B',read_byte)[0]
-                    if read_result%2==0:
-                    # 第二个比特 为0 
-                        fw.write(read_byte)
-                        if read_result%4>1:
-                            fw.write(fu.read(26))
-                        read_byte=fu.read(1)    
+                    while True:
+                        read_byte = fu.read(1)
                         read_result = struct.unpack('B',read_byte)[0]
-                        if read_result%4>1:
-                            fu.read(26)    
-                    else:
-                        if read_result%4>1:
-                            fu.read(26)   
-                        read_byte=fu.read(1) 
-                        fw.write(read_byte)
-                        read_result = struct.unpack('B',read_byte)[0]
-                        if read_result%4>1:
-                            fw.write(fu.read(26))
+                        if read_result%2==0:
+                        # 第二个比特 为0 
+                            fw.write(read_byte)
+                            if read_result%4>1:
+                                fw.write(fu.read(26))
+                            break
+                        else:
+                            if read_result%4>1:
+                                fu.read(26)
 
  
                         
@@ -442,10 +482,10 @@ class R9UlDlMatch():
                     remotfile = path+'\\'+replace_header
                     remotfile_bak = bak_path+'\\'+replace_header 
 #  TODO :TO BE DELETE
-                    LIST_FLAG =0
+#                     LIST_FLAG =0
                     if 1:
                         if tmpfile[26:29] == '208':
-                            LIST_FLAG =1
+#                             LIST_FLAG =1
                             if not os.path.exists("D:\\TEST_208\\UL\\"):
                                 os.makedirs("D:\\TEST_208\\UL\\")
                             if not os.path.exists("D:\\TEST_208\\DL\\"):
@@ -454,7 +494,7 @@ class R9UlDlMatch():
                             shutil.copy(ulfile+'.jako',"D:\\TEST_208\\UL\\")
                             shutil.copy(dlfile+'.jako',"D:\\TEST_208\\DL\\")
                         if tmpfile[26:29] == '209':
-                            LIST_FLAG =1
+#                             LIST_FLAG =1
                             if not os.path.exists("D:\\TEST_209\\UL\\"):
                                 os.makedirs("D:\\TEST_209\\UL\\")
                             if not os.path.exists("D:\\TEST_209\\DL\\"):
@@ -463,7 +503,7 @@ class R9UlDlMatch():
                             shutil.copy(ulfile+'.jako',"D:\\TEST_209\\UL\\")
                             shutil.copy(dlfile+'.jako',"D:\\TEST_209\\DL\\")                                   
                         if tmpfile[26:29] == '217':
-                            LIST_FLAG =1
+#                             LIST_FLAG =1
                             if not os.path.exists("D:\\TEST_217\\UL\\"):
                                 os.makedirs("D:\\TEST_217\\UL\\")
                             if not os.path.exists("D:\\TEST_217\\DL\\"):
@@ -472,20 +512,21 @@ class R9UlDlMatch():
                             shutil.copy(ulfile+'.jako',"D:\\TEST_217\\UL\\")
                             shutil.copy(dlfile+'.jako',"D:\\TEST_217\\DL\\")    
                         if tmpfile[26:29] == '218':
-                            LIST_FLAG =1
+#                             LIST_FLAG =1
                             if not os.path.exists("D:\\TEST_218\\UL\\"):
                                 os.makedirs("D:\\TEST_218\\UL\\")
                             if not os.path.exists("D:\\TEST_218\\DL\\"):
                                 os.makedirs("D:\\TEST_218\\DL\\")
                             print('[MATCHED] [218] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
                             shutil.copy(ulfile+'.jako',"D:\\TEST_218\\UL\\")
-                            shutil.copy(dlfile+'.jako',"D:\\TEST_218\\DL\\")                        
+                            shutil.copy(dlfile+'.jako',"D:\\TEST_218\\DL\\")  
+                    spot_beam_id = tmpfile[26:29]                      
                     if self.r9_r9_open_log_flag == 'TRUE':
                         if os.path.exists(remotfile):
                             print('[WARNING] : {%s} is exsit'%remotfile)
                             pass
                         print('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))
-                        self.logger.info('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))  
+#                         self.logger.info('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))  
                     try:
 #                         print(UlFrameNum,'-',DlFrameNum)
                         self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile_bak,UlFrameNum,DlFrameNum)
@@ -494,8 +535,13 @@ class R9UlDlMatch():
                             f=open(remotfile_bak,'w')
                             f.close()
                         shutil.copy(remotfile_bak,remotfile)
-                        if LIST_FLAG ==1:
-                            shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                         if LIST_FLAG ==1:
+                        if spot_beam_id == '208' or spot_beam_id == '209' or spot_beam_id == '217' or spot_beam_id == '218':
+                            if not os.path.exists("D:\\TEST_"+spot_beam_id+"\\MA\\"):
+                                os.makedirs("D:\\TEST_"+spot_beam_id+"\\MA\\")
+                            shutil.copy(remotfile_bak,"D:\\TEST_"+spot_beam_id+"\\MA\\")
+                        self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
+#                         shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                         #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile) 
@@ -628,34 +674,36 @@ class R9UlDlMatch():
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)
 #  TODO :TO BE DELETE                
-                LIST_FLAG = 0 
+#                 LIST_FLAG = 0 
                 if 1:
                     if tmpfile[26:29] == '208':
-                        LIST_FLAG =1
+#                         LIST_FLAG =1
                         if not os.path.exists("D:\\TEST_208\\DL\\"):
                             os.makedirs("D:\\TEST_208\\DL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_208\\DL\\")
                     if tmpfile[26:29] == '209':
-                        LIST_FLAG =1
+#                         LIST_FLAG =1
                         if not os.path.exists("D:\\TEST_209\\DL\\"):
                             os.makedirs("D:\\TEST_209\\DL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_209\\DL\\")
                     if tmpfile[26:29] == '217':
-                        LIST_FLAG =1
+#                         LIST_FLAG =1
                         if not os.path.exists("D:\\TEST_217\\DL\\"):
                             os.makedirs("D:\\TEST_217\\DL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_217\\DL\\")                
                     if tmpfile[26:29] == '218':
-                        LIST_FLAG =1
+#                         LIST_FLAG =1
                         if not os.path.exists("D:\\TEST_218\\DL\\"):
                             os.makedirs("D:\\TEST_218\\DL\\")
-                        shutil.copy(current_file_loc,"D:\\TEST_218\\DL\\")                          
+                        shutil.copy(current_file_loc,"D:\\TEST_218\\DL\\")     
+                spot_beam_id =  tmpfile[26:29]                     
                 if self.r9_rm_old_file_flag == 'TRUE' :
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            if LIST_FLAG ==1:
-                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             if LIST_FLAG ==1:
+#                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -666,16 +714,18 @@ class R9UlDlMatch():
                             f.close()
                             f=open(remotfile_bak,'w')
                             f.close()
-                            if LIST_FLAG ==1:
-                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             if LIST_FLAG ==1:
+#                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
                             os.remove(current_file_loc)
                         except:
                             print("[ERROR] DL FILE SAVE ERROR!")
                     else:
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            if LIST_FLAG ==1:
-                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             if LIST_FLAG ==1:
+#                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -766,35 +816,36 @@ class R9UlDlMatch():
                 self.proc_count_len = self.proc_count_len+1
                 self.r9_match_progress_bar_print(self.proc_count_len)  
 #  TODO :TO BE DELETE
-                LIST_FLAG = 0                
+#                 LIST_FLAG = 0                
                 if 1:
                     if tmpfile[26:29] == '208':
-                        LIST_FLAG=1
+#                         LIST_FLAG=1
                         if not os.path.exists("D:\\TEST_208\\UL\\"):
                             os.makedirs("D:\\TEST_208\\UL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_208\\UL\\")
                     if tmpfile[26:29] == '209':
-                        LIST_FLAG=1
+#                         LIST_FLAG=1
                         if not os.path.exists("D:\\TEST_209\\UL\\"):
                             os.makedirs("D:\\TEST_209\\UL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_209\\UL\\")
                     if tmpfile[26:29] == '217':
-                        LIST_FLAG=1
+#                         LIST_FLAG=1
                         if not os.path.exists("D:\\TEST_217\\UL\\"):
                             os.makedirs("D:\\TEST_217\\UL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_217\\UL\\")
                     if tmpfile[26:29] == '218':
-                        LIST_FLAG=1
+#                         LIST_FLAG=1
                         if not os.path.exists("D:\\TEST_218\\UL\\"):
                             os.makedirs("D:\\TEST_218\\UL\\")
                         shutil.copy(current_file_loc,"D:\\TEST_218\\UL\\")                        
-                        
+                spot_beam_id =  tmpfile[26:29]       
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            if LIST_FLAG==1:
-                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             if LIST_FLAG==1:
+#                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
@@ -805,16 +856,19 @@ class R9UlDlMatch():
                             f.close()
                             f=open(remotfile_bak,'w')
                             f.close()
-                            if LIST_FLAG==1:
-                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             if LIST_FLAG==1:
+#                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+
+                            self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
                             os.remove(current_file_loc)
                         except:
                             print('[ERROR] UL FILE SAVE ERROR',remotfile)   
                     else:
                         try:
                             shutil.copy(current_file_loc,remotfile_bak)
-                            if LIST_FLAG==1:
-                                shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             if LIST_FLAG==1:
+#                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+                            self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
                             shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -899,6 +953,8 @@ class R9UlDlMatch():
             '''
 #             print(self.ulfile_dict)
             if 'UL'==self.r9_exe_type:
+                self.r9_rm_middle_station_time_out_dir()
+                
                 self.r9_ulfile_list=self.r9_get_ul_file()
             
                 self.r9_ullist_proc()
@@ -934,7 +990,7 @@ class R9UlDlMatch():
 #                 
 #                 self.r9_progress_bar_finish()
             elif 'DL'==self.r9_exe_type:
-                pass
+                self.r9_mk_sub_dir()
                 self.dlfile_dict= {}
                  
                 self.r9_c_server_file_list=[]
@@ -942,8 +998,8 @@ class R9UlDlMatch():
                 self.r9_dlfile_list=self.r9_get_dl_file()
                 self.r9_dllist_proc()
                 self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
-                print(len(self.r9_c_server_file_list))
-                print(len(self.r9_dlfile_list))
+                print('C station file count = ',len(self.r9_c_server_file_list))
+                print('L station file count = ',len(self.r9_dlfile_list))
                 self.proc_count_len = 0
                 self.r9_progress_bar_init(self.total_list_len)
                  
