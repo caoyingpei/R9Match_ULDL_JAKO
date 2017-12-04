@@ -26,7 +26,6 @@ def app():
     if cfg == None:
         print('cfg file load error')
     ss=r9_ul_dl_match.R9UlDlMatch(cfg)
-    print('start proc')
     ss.run()    
 if __name__ == "__main__":
     file_lock.app_lock(app,'MainR9Match')

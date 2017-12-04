@@ -6,7 +6,7 @@ Created on 2017年3月2日
 import logging  
 import logging.config  
   
-logging.config.fileConfig('log.conf')  
+logging.config.fileConfig('configFile/log.conf')  
 root_logger = logging.getLogger('root')  
 root_logger.debug('test root logger...')  
   

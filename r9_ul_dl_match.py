@@ -98,31 +98,34 @@ class R9UlDlMatch():
     def r9_mk_sub_dir(self):
         dir_list = self._fl.scp_list_dir(self.C_RESULT_CONTENT)
         if not self.r9_middle_station_name in dir_list:
-            self._fl.scp_mkdir(self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name)
-        dir_list =self._fl.scp_list_dir(self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name)
+            self._fl.scp_mkdir(self.C_RESULT_CONTENT+'\\'+self.r9_middle_station_name)
+        dir_list =self._fl.scp_list_dir(self.C_RESULT_CONTENT+'\\'+self.r9_middle_station_name)
         for spot_beam in self.r9_spot_beam_list:
             if not spot_beam in dir_list:
-                self._fl.scp_mkdir(self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name+'//'+spot_beam)
+                self._fl.scp_mkdir(self.C_RESULT_CONTENT+'\\'+self.r9_middle_station_name+'\\'+spot_beam)
     
     def r9_scp_get_c_file_list(self):
         file_list = []
         now_time = time.time()
         print(now_time)
-        sub_content = self.C_RESULT_CONTENT+'//'+self.r9_middle_station_name
+        sub_content = self.C_RESULT_CONTENT+'\\'+self.r9_middle_station_name
         for spot_beam in self.r9_spot_beam_list:
-            spot_beam_content = sub_content+'//'+spot_beam
+            spot_beam_content = sub_content+'\\'+spot_beam
             remotelist = self._fl.scp_attr(spot_beam_content)
             for file in remotelist:
                 file_time = file.st_atime
                 print(file_time)
                 if now_time - file_time > self.r9_match_how_many_min_ago *10:
-                    file_list.append(spot_beam_content+'//'+file.filename)
+                    file_list.append(spot_beam_content+'\\'+file.filename)
         return file_list
               
     def r9_scp_download_file(self):
+#         print(self.r9_c_server_file_list)
         for file in self.r9_c_server_file_list:
 #                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
+            
             tmpfile=file.rsplit(os.sep)[-1].rsplit('.')[0]
+            print(tmpfile)
             Suffix = file.rsplit(os.sep)[-1].rsplit('.')[-1]
             if not os.path.exists(self.r9_ul_file_content+'\\sms\\'):
                 os.makedirs(self.r9_ul_file_content+'\\sms\\')
@@ -292,25 +295,25 @@ class R9UlDlMatch():
 #         print(self.r9_c_server_for_download_file_content)
         for dir in os.listdir(self.r9_c_server_for_download_file_content):
 #             print(dir)
-            if os.path.isdir(self.r9_c_server_for_download_file_content+'//'+dir):
-                for sub_dir in os.listdir(self.r9_c_server_for_download_file_content+'//'+dir):
+            if os.path.isdir(self.r9_c_server_for_download_file_content+'\\'+dir):
+                for sub_dir in os.listdir(self.r9_c_server_for_download_file_content+'\\'+dir):
 #                     print(sub_dir)
                     if sub_dir == spot_beam_id:
-                        shutil.copy(file,self.r9_c_server_for_download_file_content+'//'+dir+'//'+sub_dir)
+                        shutil.copy(file,self.r9_c_server_for_download_file_content+'\\'+dir+'\\'+sub_dir)
     def r9_rm_middle_station_time_out_dir(self):
 #         print(self.r9_c_server_for_download_file_content)
         for dir in os.listdir(self.r9_c_server_for_download_file_content):
 #             print(dir)
-#             filenames = os.walk(self.r9_c_server_for_download_file_content+'//'+dir)[2]
-            totalFileCount = sum([len(files) for root, dirs, files in os.walk(self.r9_c_server_for_download_file_content+'//'+dir)])
-            print('CNT = %d | %s'%(totalFileCount,self.r9_c_server_for_download_file_content+'//'+dir))
+#             filenames = os.walk(self.r9_c_server_for_download_file_content+'\\'+dir)[2]
+            totalFileCount = sum([len(files) for root, dirs, files in os.walk(self.r9_c_server_for_download_file_content+'\\'+dir)])
+            print('CNT = %d | %s'%(totalFileCount,self.r9_c_server_for_download_file_content+'\\'+dir))
             if totalFileCount>300:
-                shutil.rmtree(self.r9_c_server_for_download_file_content+'//'+dir)
-#             if os.path.isdir(self.r9_c_server_for_download_file_content+'//'+dir):
-#                 for sub_dir in os.listdir(self.r9_c_server_for_download_file_content+'//'+dir):
+                shutil.rmtree(self.r9_c_server_for_download_file_content+'\\'+dir)
+#             if os.path.isdir(self.r9_c_server_for_download_file_content+'\\'+dir):
+#                 for sub_dir in os.listdir(self.r9_c_server_for_download_file_content+'\\'+dir):
 # #                     print(sub_dir)
 #                     if sub_dir == spot_beam_id:
-#                         shutil.copy(file,self.r9_c_server_for_download_file_content+'//'+dir+'//'+sub_dir)
+#                         shutil.copy(file,self.r9_c_server_for_download_file_content+'\\'+dir+'\\'+sub_dir)
                      
         
         
@@ -761,7 +764,7 @@ class R9UlDlMatch():
                 
                 file_size = os.path.getsize(current_file_loc)/1024
                 
-                
+#                 print('aaaaa')
                 tep = tmpfile.split('#')
                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
                     remotfile = self.r9_result_file_content_sms+'\\'+tmpfile[0:len(tmpfile)-20]+'.txt'
@@ -868,6 +871,7 @@ class R9UlDlMatch():
                             shutil.copy(current_file_loc,remotfile_bak)
 #                             if LIST_FLAG==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
+#                             print('a')
                             self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
                             shutil.move(current_file_loc,remotfile)
                         except:
@@ -930,7 +934,7 @@ class R9UlDlMatch():
             else:
                 print('[FILE]->%D FORMAT ERROR',file)
                 #self.logger.error('[FILE]->%D FORMAT ERROR',file)    
-            
+            print(tmpfile)
             if tmpfile[26:29] in self.r9_spot_beam_list:
                 try:
                     shutil.move(file,remotfile)
@@ -995,6 +999,7 @@ class R9UlDlMatch():
                  
                 self.r9_c_server_file_list=[]
                 self.r9_c_server_file_list=self.r9_scp_get_c_file_list()
+                
                 self.r9_dlfile_list=self.r9_get_dl_file()
                 self.r9_dllist_proc()
                 self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)

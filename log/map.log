@@ -698,3 +698,27 @@
 2017-11-22 16:26:31,468 - line:398 - main - ERROR - [ERROR :] FILE_NAME FORMAT ERROR [E:\jako\dlfile\123232\yci20170915083717000021t110000000#51_280844#16_75799##N#IMEISV_356065061575860#105#00000001x082936.jako]
 2017-11-22 16:27:21,600 - line:398 - main - ERROR - [ERROR :] FILE_NAME FORMAT ERROR [E:\jako\dlfile\123232\yci20170915083717000021t110000000#51_280844#16_75799##N#IMEISV_356065061575860#105#00000001x082936.jako]
 2017-11-22 16:27:27,210 - line:398 - main - ERROR - [ERROR :] FILE_NAME FORMAT ERROR [E:\jako\dlfile\123232\yci20170915083717000021t110000000#51_280844#16_75799##N#IMEISV_356065061575860#105#00000001x082936.jako]
+2017-12-01 17:06:54,473 - line:14 - main - INFO - test main logger
+2017-12-01 17:06:54,479 - line:15 - main - INFO - start import module 'mod'...
+2017-12-01 17:09:30,670 - line:14 - main - INFO - test main logger
+2017-12-01 17:09:30,670 - line:15 - main - INFO - start import module 'mod'...
+2017-12-01 17:13:31,074 - line:110 - main - INFO - 1512119611.074598
+2017-12-01 17:22:44,158 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:23:13,074 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:23:13,087 - line:1004 - main - INFO - C station file count = 0
+2017-12-01 17:23:13,087 - line:1006 - main - INFO - L station file count = 0
+2017-12-01 17:23:23,093 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:23:23,127 - line:1004 - main - INFO - C station file count = 0
+2017-12-01 17:23:23,128 - line:1006 - main - INFO - L station file count = 0
+2017-12-01 17:23:33,138 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:23:33,152 - line:1004 - main - INFO - C station file count = 0
+2017-12-01 17:23:33,153 - line:1006 - main - INFO - L station file count = 0
+2017-12-01 17:23:45,321 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:23:45,334 - line:1004 - main - INFO - C station file count = 0
+2017-12-01 17:23:45,335 - line:1006 - main - INFO - L station file count = 0
+2017-12-01 17:23:55,337 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:23:55,369 - line:1004 - main - INFO - C station file count = 0
+2017-12-01 17:23:55,370 - line:1006 - main - INFO - L station file count = 0
+2017-12-01 17:24:05,379 - line:948 - main - INFO - start match ul dl file
+2017-12-01 17:24:05,411 - line:1004 - main - INFO - C station file count = 0
+2017-12-01 17:24:05,412 - line:1006 - main - INFO - L station file count = 0
