@@ -11,8 +11,8 @@ import time
 import json
 import re
 import datetime
-# import logging  
-# import logging.config  
+import logging  
+import logging.config  
 from scp_send import *  
 
 from progressbar import  ETA, ProgressBar, SimpleProgress, AbsoluteETA
@@ -38,10 +38,11 @@ class R9UlDlMatch():
         @1 读取配置文件
         '''
         print(json.dumps(cfg,indent = 4))
-#         logging.config.fileConfig('./configFile/log.conf')  
-#         self.logger = logging.getLogger('main')  
+        logging.config.fileConfig('./configFile/log.conf')  
+        self.logger = logging.getLogger('main')  
         
 #         logger.info('start import module \'mod\'...')  
+
         self.r9_ul_file_content = cfg['R9_UL_FILE_CONTENT']
         self.r9_dl_file_exit_flag = cfg['R9_DL_FILE_EXIT']
         self.r9_exe_type = cfg["R9_EXE_TYPE"]
@@ -85,6 +86,7 @@ class R9UlDlMatch():
             pass
         if 'DL'==self.r9_exe_type:
             self.r9_middle_station_name = cfg['R9_MIDDLE_STATION_NAME']
+            self.r9_middle_server_file_content = cfg['R9_MIDDLE_SERVER_FILE_CONTENT']
             self.r9_scp_init()
             
     def r9_scp_init(self):
@@ -133,6 +135,7 @@ class R9UlDlMatch():
                 os.makedirs(self.r9_ul_file_content+'\\lu\\')
             if not os.path.exists(self.r9_ul_file_content+'\\jako\\'):
                 os.makedirs(self.r9_ul_file_content+'\\jako\\')
+                
             if Suffix == 'txt':
                 if tmpfile[1]=='s' or tmpfile[1] == 'S':
                     remotfile = self.r9_ul_file_content+'\\sms\\'+tmpfile+'.'+Suffix
@@ -149,6 +152,8 @@ class R9UlDlMatch():
             if tmpfile[26:29] in self.r9_spot_beam_list:
                 try:
                     self._fl.scp_get(file, remotfile)
+                    if -1==remotfile.find("jako"):
+                        shutil.copy(remotfile,self.r9_middle_server_file_content)
                     self._fl.scp_rm_file(file)
                 except:
                     print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -438,6 +443,7 @@ class R9UlDlMatch():
                 dlfile = dlfile.rsplit('.')[0]
                 ultmpList = self.r9_split(ulfile)
                 dltmpList = self.r9_split(dlfile)
+#                 UlFrameNum= (int(ultmpList[-1])+100)%self.TOTAL_FRAME_NUM
                 UlFrameNum= int(ultmpList[-1])
                 DlFrameNum= int(dltmpList[-1])
 #                 if (UlFrameNum - DlFrameNum) TOTAL_FRAME_NUM
@@ -462,8 +468,15 @@ class R9UlDlMatch():
                         remotfile=remotfile.replace('##','#N#') 
                     except:
                         pass
+                    
+                    r=re.compile('#.*?#.*?#(.*?)#N#')
+                    l=r.findall(remotfile)
+                    dl_telnum = r.findall(dlfile)
+                    remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
+                    
                     split_header=remotfile.rsplit('\\',1)
                     
+
                     
                     if 1==int(tep[len(tep)-2])//128:
                         replace_header= split_header[1].replace(split_header[1][0:3],'nlo')
@@ -477,7 +490,11 @@ class R9UlDlMatch():
                         
                     replace_header= split_header[1].replace(split_header[1][0:29],split_header[1][0:26]\
                                     +dlfile.rsplit('\\',1)[1][26:29])
-                    
+                    if 'i'==replace_header[2] or 'I'==replace_header[2]:
+                        try:
+                            replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum[0]+'#')
+                        except:
+                            pass
                     if not os.path.exists(path):
                         os.makedirs(path) 
                     if not os.path.exists(bak_path):
@@ -486,7 +503,7 @@ class R9UlDlMatch():
                     remotfile_bak = bak_path+'\\'+replace_header 
 #  TODO :TO BE DELETE
 #                     LIST_FLAG =0
-                    if 1:
+                    if 0:
                         if tmpfile[26:29] == '208':
 #                             LIST_FLAG =1
                             if not os.path.exists("D:\\TEST_208\\UL\\"):
@@ -539,10 +556,11 @@ class R9UlDlMatch():
                             f.close()
                         shutil.copy(remotfile_bak,remotfile)
 #                         if LIST_FLAG ==1:
-                        if spot_beam_id == '208' or spot_beam_id == '209' or spot_beam_id == '217' or spot_beam_id == '218':
-                            if not os.path.exists("D:\\TEST_"+spot_beam_id+"\\MA\\"):
-                                os.makedirs("D:\\TEST_"+spot_beam_id+"\\MA\\")
-                            shutil.copy(remotfile_bak,"D:\\TEST_"+spot_beam_id+"\\MA\\")
+                        if 0:
+                            if spot_beam_id == '208' or spot_beam_id == '209' or spot_beam_id == '217' or spot_beam_id == '218':
+                                if not os.path.exists("D:\\TEST_"+spot_beam_id+"\\MA\\"):
+                                    os.makedirs("D:\\TEST_"+spot_beam_id+"\\MA\\")
+                                shutil.copy(remotfile_bak,"D:\\TEST_"+spot_beam_id+"\\MA\\")
                         self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
 #                         shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                     except:
@@ -641,7 +659,7 @@ class R9UlDlMatch():
                     if not os.path.exists(bak_path):
                         os.makedirs(bak_path)
                         
-                    if file_size < self.r9_change_file_loc_kb_thres:
+                    if not 1==int(tep[len(tep)-2])//128:
                         remotfile = 'n'+tmpfile[1:len(tmpfile)-20]+'.txt'
                     else:
                         remotfile = tmpfile[0:len(tmpfile)-20].replace(tmpfile[0:3],'nlo')+'.txt'
@@ -661,7 +679,9 @@ class R9UlDlMatch():
                 except:
                     pass
 
-                
+                r=re.compile('#.*?#.*?#(.*?)#N#')
+                l=r.findall(remotfile)
+                remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
                 # @new version delete the function
 #                 r=re.compile('IMEISV_(.*?)\.')
 #                 l=r.findall(remotfile)
@@ -678,7 +698,7 @@ class R9UlDlMatch():
                 self.r9_match_progress_bar_print(self.proc_count_len)
 #  TODO :TO BE DELETE                
 #                 LIST_FLAG = 0 
-                if 1:
+                if 0:
                     if tmpfile[26:29] == '208':
 #                         LIST_FLAG =1
                         if not os.path.exists("D:\\TEST_208\\DL\\"):
@@ -769,7 +789,7 @@ class R9UlDlMatch():
                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
                     remotfile = self.r9_result_file_content_sms+'\\'+tmpfile[0:len(tmpfile)-20]+'.txt'
                 elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
-                    if file_size < self.r9_change_file_loc_kb_thres:
+                    if not 1==int(tep[len(tep)-2])//128:
                         remotfile = self.r9_result_file_content_empty+'\\'+'n'+tmpfile[1:len(tmpfile)-20]+'.txt'
                     else:
                         remotfile = self.r9_result_file_content_empty+'\\'+tmpfile[0:len(tmpfile)-20].replace(tmpfile[0:3],'nlo')+'.txt'
@@ -820,7 +840,7 @@ class R9UlDlMatch():
                 self.r9_match_progress_bar_print(self.proc_count_len)  
 #  TODO :TO BE DELETE
 #                 LIST_FLAG = 0                
-                if 1:
+                if 0:
                     if tmpfile[26:29] == '208':
 #                         LIST_FLAG=1
                         if not os.path.exists("D:\\TEST_208\\UL\\"):
@@ -950,70 +970,72 @@ class R9UlDlMatch():
         while True:
             print('%s [INFO] : start match ul dl file'%(time.ctime()))
 
-            
             '''
             @todo: 程序测试
             @todo: 上下行文件的过滤（暂时不考虑）
             '''
 #             print(self.ulfile_dict)
-            if 'UL'==self.r9_exe_type:
-                self.r9_rm_middle_station_time_out_dir()
+            try:
+                if 'UL'==self.r9_exe_type:
+                    self.r9_rm_middle_station_time_out_dir()
+                    
+                    self.r9_ulfile_list=self.r9_get_ul_file()
                 
-                self.r9_ulfile_list=self.r9_get_ul_file()
-            
-                self.r9_ullist_proc()
-                if self.r9_dl_file_exit_flag == "TRUE":
+                    self.r9_ullist_proc()
+                    if self.r9_dl_file_exit_flag == "TRUE":
+                        self.r9_dlfile_list=self.r9_get_dl_file()
+                        
+                        self.total_list_len = len(self.r9_ulfile_list)+len(self.r9_dlfile_list)
+                        
+                        
+                        self.proc_count_len = 0
+                        self.r9_progress_bar_init(self.total_list_len)
+                        
+                        self.r9_dllist_proc()
+                        self.r9_ul_dl_match()
+                        self.r9_progress_bar_finish()
+                    else:
+                        self.r9_ul_file_save()
+                        self.ulfile_dict= {}
+    #             elif 'DL'==self.r9_exe_type:
+    #                 self.dlfile_dict= {}
+    #                 self.r9_c_server_file_list=[]
+    #                 self.r9_c_server_file_list=self.r9_get_c_server_file()
+    #                 self.r9_dlfile_list=self.r9_get_dl_file()
+    #                 self.r9_dllist_proc()
+    #                 self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
+    #                 print(len(self.r9_c_server_file_list))
+    #                 print(len(self.r9_dlfile_list))
+    #                 self.proc_count_len = 0
+    #                 self.r9_progress_bar_init(self.total_list_len)
+    #                 
+    #                 self.dl_upload_file_proc()
+    #                 self.dl_download_file_proc()
+    #                 
+    #                 self.r9_progress_bar_finish()
+                elif 'DL'==self.r9_exe_type:
+                    self.r9_mk_sub_dir()
+                    self.dlfile_dict= {}
+                     
+                    self.r9_c_server_file_list=[]
+                    self.r9_c_server_file_list=self.r9_scp_get_c_file_list()
+                    
                     self.r9_dlfile_list=self.r9_get_dl_file()
-                    
-                    self.total_list_len = len(self.r9_ulfile_list)+len(self.r9_dlfile_list)
-                    
-                    
+                    self.r9_dllist_proc()
+                    self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
+                    print('C station file count = ',len(self.r9_c_server_file_list))
+                    print('L station file count = ',len(self.r9_dlfile_list))
                     self.proc_count_len = 0
                     self.r9_progress_bar_init(self.total_list_len)
-                    
-                    self.r9_dllist_proc()
-                    self.r9_ul_dl_match()
-                    self.r9_progress_bar_finish()
+                     
+                    self.r9_scp_upload_file()
+                    self.r9_scp_download_file()
+                     
+                    self.r9_progress_bar_finish()    
                 else:
-                    self.r9_ul_file_save()
-                    self.ulfile_dict= {}
-#             elif 'DL'==self.r9_exe_type:
-#                 self.dlfile_dict= {}
-#                 self.r9_c_server_file_list=[]
-#                 self.r9_c_server_file_list=self.r9_get_c_server_file()
-#                 self.r9_dlfile_list=self.r9_get_dl_file()
-#                 self.r9_dllist_proc()
-#                 self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
-#                 print(len(self.r9_c_server_file_list))
-#                 print(len(self.r9_dlfile_list))
-#                 self.proc_count_len = 0
-#                 self.r9_progress_bar_init(self.total_list_len)
-#                 
-#                 self.dl_upload_file_proc()
-#                 self.dl_download_file_proc()
-#                 
-#                 self.r9_progress_bar_finish()
-            elif 'DL'==self.r9_exe_type:
-                self.r9_mk_sub_dir()
-                self.dlfile_dict= {}
-                 
-                self.r9_c_server_file_list=[]
-                self.r9_c_server_file_list=self.r9_scp_get_c_file_list()
-                
-                self.r9_dlfile_list=self.r9_get_dl_file()
-                self.r9_dllist_proc()
-                self.total_list_len = len(self.r9_c_server_file_list)+len(self.r9_dlfile_list)
-                print('C station file count = ',len(self.r9_c_server_file_list))
-                print('L station file count = ',len(self.r9_dlfile_list))
-                self.proc_count_len = 0
-                self.r9_progress_bar_init(self.total_list_len)
-                 
-                self.r9_scp_upload_file()
-                self.r9_scp_download_file()
-                 
-                self.r9_progress_bar_finish()    
-            else:
-                print("UNKOWN EXE TYPE")
-                exit        
-                    
+                    print("UNKOWN EXE TYPE")
+                    sys.exit(0)         
+            except:
+                self.logger.exception('Exception Logged')
+                sys.exit(0)            
             time.sleep(self.r9_check_period)

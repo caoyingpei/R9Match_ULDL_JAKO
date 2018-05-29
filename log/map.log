@@ -722,3 +722,202 @@
 2017-12-01 17:24:05,379 - line:948 - main - INFO - start match ul dl file
 2017-12-01 17:24:05,411 - line:1004 - main - INFO - C station file count = 0
 2017-12-01 17:24:05,412 - line:1006 - main - INFO - L station file count = 0
+2018-05-24 15:59:52,733 - line:14 - main - INFO - test main logger
+2018-05-24 15:59:52,739 - line:15 - main - INFO - start import module 'mod'...
+2018-05-24 19:08:39,362 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:08:49,381 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:08:59,400 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:09:09,422 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:09:19,444 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:09:29,464 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:09:39,489 - line:1035 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 991, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 590, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 493, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:10:04,583 - line:1036 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 992, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 591, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 494, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:10:14,606 - line:1036 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 992, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 591, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 494, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:10:24,628 - line:1036 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 992, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 591, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 494, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:10:34,651 - line:1036 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 992, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 591, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 494, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:10:44,675 - line:1036 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 992, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 591, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 494, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-24 19:10:54,696 - line:1036 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 992, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 591, in r9_ul_dl_match
+    self.r9_ul_dl_file_match_proc(key)
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 494, in r9_ul_dl_file_match_proc
+    replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum+'#')
+TypeError: Can't convert 'list' object to str implicitly
+2018-05-26 19:53:10,054 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:53:20,056 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:53:30,063 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:53:33,262 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:53:43,264 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:53:53,268 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:53:55,828 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:54:05,832 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:54:15,838 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:54:25,846 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:54:35,856 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:54:45,864 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:54:55,872 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:55:05,880 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:55:15,889 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined
+2018-05-26 19:55:25,533 - line:1039 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
+    os.remove(file)
+NameError: name 'file' is not defined

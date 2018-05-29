@@ -13,6 +13,7 @@ root_logger.debug('test root logger...')
 logger = logging.getLogger('main')  
 logger.info('test main logger')  
 logger.info('start import module \'mod\'...')  
+logger.exception("Exception Logged")
 
 smtploger = logging.getLogger('smtp') 
 smtploger.info('test main logger')  
