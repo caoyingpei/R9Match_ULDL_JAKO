@@ -70,6 +70,13 @@ class R9UlDlMatch():
         self.r9_result_file_content_bak  = cfg['R9_RESULT_FILE_CONTENT_BAK']
         self.r9_result_file_content_bak_empty = cfg['R9_RESULT_FILE_CONTENT_BAK_EMPTY']
         self.r9_result_file_content_bak_sms = cfg['R9_RESULT_FILE_CONTENT_BAK_SMS']
+        
+        try:
+            self.r9_result_remote_file_content_bak  = cfg['R9_RESULT_REMOTE_FILE_CONTENT']
+            self.r9_result_remote_file_content_bak_empty = cfg['R9_RESULT_REMOTE_FILE_CONTENT_EMPTY']
+            self.r9_result_remote_file_content_bak_sms = cfg['R9_RESULT_REMOTE_FILE_CONTENT_BAK_SMS']
+        except:
+            pass
         try:
             self.r9_r9_open_file_filter_flag = cfg['R9_OPEN_FILE_FILTER_FLAG']
             self.r9_r9_open_log_flag = cfg['R9_OPEN_LOG_FLAG']
@@ -87,10 +94,10 @@ class R9UlDlMatch():
         if 'DL'==self.r9_exe_type:
             self.r9_middle_station_name = cfg['R9_MIDDLE_STATION_NAME']
             self.r9_middle_server_file_content = cfg['R9_MIDDLE_SERVER_FILE_CONTENT']
+            self._fl=scp(self.r9_scp['IP'],self.r9_scp['PORT'],self.r9_scp['USERNAME'],self.r9_scp['PASSWORD'])
             self.r9_scp_init()
-            
+
     def r9_scp_init(self):
-        self._fl=scp(self.r9_scp['IP'],self.r9_scp['PORT'],self.r9_scp['USERNAME'],self.r9_scp['PASSWORD'])
         dir_list = self._fl.scp_list_dir()
         if not self.C_RESULT_CONTENT in dir_list :
             self._fl.scp_mkdir(self.C_RESULT_CONTENT)
@@ -549,19 +556,19 @@ class R9UlDlMatch():
 #                         self.logger.info('[MATCHED] :\n    ->%s \n    ->%s'%(ulfile+'.jako',dlfile+'.jako'))  
                     try:
 #                         print(UlFrameNum,'-',DlFrameNum)
-                        self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile_bak,UlFrameNum,DlFrameNum)
+                        self.r9_voice_merge(ulfile+'.jako',dlfile+'.jako',remotfile,UlFrameNum,DlFrameNum)
                         
                         if 1==int(tep[len(tep)-2])//128:
-                            f=open(remotfile_bak,'w')
+                            f=open(remotfile,'w')
                             f.close()
-                        shutil.copy(remotfile_bak,remotfile)
+                        #shutil.copy(remotfile_bak,remotfile)
 #                         if LIST_FLAG ==1:
                         if 0:
                             if spot_beam_id == '208' or spot_beam_id == '209' or spot_beam_id == '217' or spot_beam_id == '218':
                                 if not os.path.exists("D:\\TEST_"+spot_beam_id+"\\MA\\"):
                                     os.makedirs("D:\\TEST_"+spot_beam_id+"\\MA\\")
-                                shutil.copy(remotfile_bak,"D:\\TEST_"+spot_beam_id+"\\MA\\")
-                        self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
+                                shutil.copy(remotfile,"D:\\TEST_"+spot_beam_id+"\\MA\\")
+                        self.r9_copy_to_middle_station(remotfile, spot_beam_id)
 #                         shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -723,42 +730,44 @@ class R9UlDlMatch():
                 if self.r9_rm_old_file_flag == 'TRUE' :
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
-                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.move(current_file_loc,remotfile)
 #                             if LIST_FLAG ==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
-                            self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
-                            shutil.move(current_file_loc,remotfile)
+                            self.r9_copy_to_middle_station(remotfile, spot_beam_id)
+                            #shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
-                    if 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
+                    elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                         try:
+                            #f=open(current_file_loc,'w')
+                            #f.close()
+#                             f=open(remotfile,'w')
+#                             f.close()
                             f=open(remotfile,'w')
-                            f.close()
-                            f=open(remotfile_bak,'w')
                             f.close()
 #                             if LIST_FLAG ==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
-                            self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
+                            self.r9_copy_to_middle_station(remotfile, spot_beam_id)
                             os.remove(current_file_loc)
                         except:
                             print("[ERROR] DL FILE SAVE ERROR!")
                     else:
                         try:
-                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.move(current_file_loc,remotfile)
 #                             if LIST_FLAG ==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
-                            self.r9_copy_to_middle_station(remotfile_bak, spot_beam_id)
-                            shutil.move(current_file_loc,remotfile)
+                            self.r9_copy_to_middle_station(remotfile, spot_beam_id)
+                            #shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                     
                 else:
                     try:
-                        shutil.copy(current_file_loc,remotfile_bak)
-                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                         shutil.copy(current_file_loc,remotfile)
+                        shutil.copy(remotfile,self.r9_c_server_for_download_file_content)
+                        #shutil.copy(current_file_loc,remotfile)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                         #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -865,11 +874,11 @@ class R9UlDlMatch():
                 if self.r9_rm_old_file_flag == 'TRUE':
                     if tmpfile[1] == 's' or tmpfile[1] == 'S':
                         try:
-                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.move(current_file_loc,remotfile)
 #                             if LIST_FLAG==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
-                            self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
-                            shutil.move(current_file_loc,remotfile)
+                            self.r9_copy_to_middle_station(remotfile,spot_beam_id)
+                            #shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)    
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -882,26 +891,26 @@ class R9UlDlMatch():
 #                             if LIST_FLAG==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
 
-                            self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
+                            self.r9_copy_to_middle_station(remotfile,spot_beam_id)
                             os.remove(current_file_loc)
                         except:
                             print('[ERROR] UL FILE SAVE ERROR',remotfile)   
                     else:
                         try:
-                            shutil.copy(current_file_loc,remotfile_bak)
+                            shutil.move(current_file_loc,remotfile)
 #                             if LIST_FLAG==1:
 #                             shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
 #                             print('a')
-                            self.r9_copy_to_middle_station(remotfile_bak,spot_beam_id)
-                            shutil.move(current_file_loc,remotfile)
+                            self.r9_copy_to_middle_station(remotfile,spot_beam_id)
+                            #shutil.move(current_file_loc,remotfile)
                         except:
                             print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                             #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                 else:
                     try:
-                        shutil.copy(current_file_loc,remotfile_bak)
-                        shutil.copy(remotfile_bak,self.r9_c_server_for_download_file_content)
                         shutil.copy(current_file_loc,remotfile)
+                        shutil.copy(remotfile,self.r9_c_server_for_download_file_content)
+                        #shutil.copy(current_file_loc,remotfile)
                     except:
                         print('[FILE]->%D  COULD NOT BE FOUND',remotfile)
                         #self.logger.error('[FILE]->%D  COULD NOT BE FOUND',remotfile)
@@ -966,6 +975,62 @@ class R9UlDlMatch():
             self.proc_count_len = self.proc_count_len+1
             print(self.proc_count_len)
             self.r9_match_progress_bar_print(self.proc_count_len)
+    def r9_copy_file_to_remote_content(self):
+        path = self.r9_result_file_content
+        bak_remote = self.r9_result_remote_file_content_bak
+        bak_path = self.r9_result_file_content_bak + '\\'+self.r9_get_year_month_day()
+        if not os.path.exists(bak_remote):
+            os.makedirs(bak_remote) 
+        if not os.path.exists(bak_path):
+            os.makedirs(bak_path) 
+        for parent,dirnames,filenames in os.walk(path):
+            for filename in filenames:
+                try:
+                    shutil.copy(os.path.join(parent,filename), os.path.join(bak_remote,filename) )
+                    shutil.move(os.path.join(parent,filename),os.path.join(bak_path,filename) )
+                except:
+                    pass 
+        
+        
+        path_sms = self.r9_result_file_content_sms 
+        bak_remote_sms = self.r9_result_remote_file_content_bak_sms
+        bak_path_sms = self.r9_result_file_content_bak_sms + '\\'+self.r9_get_year_month_day()
+        if not os.path.exists(bak_remote_sms):
+            os.makedirs(bak_remote_sms) 
+        if not os.path.exists(bak_path_sms):
+            os.makedirs(bak_path_sms) 
+        for parent,dirnames,filenames in os.walk(path_sms):
+            for filename in filenames:
+                try:
+                    shutil.copy(os.path.join(parent,filename), os.path.join(bak_remote_sms,filename) )
+                    shutil.move(os.path.join(parent,filename), os.path.join(bak_path_sms,filename) )
+                except:
+                    pass
+        
+        
+        path_empty = self.r9_result_file_content_empty
+        bak_remote_empty = self.r9_result_remote_file_content_bak_empty
+        bak_path_empty = self.r9_result_file_content_bak_empty + '\\'+self.r9_get_year_month_day()
+        if not os.path.exists(bak_remote_empty):
+            os.makedirs(bak_remote_empty)
+        if not os.path.exists(bak_path_empty):
+            os.makedirs(bak_path_empty) 
+        for parent,dirnames,filenames in os.walk(path_empty):
+            for filename in filenames:
+                try:
+                    shutil.copy(os.path.join(parent,filename), os.path.join(bak_remote_empty,filename))
+                    shutil.move(os.path.join(parent,filename), os.path.join(bak_path_empty,filename))
+                except:
+                    pass 
+        
+        #            self.r9_result_remote_file_content_bak  = cfg['R9_RESULT_REMOTE_FILE_CONTENT']
+        #    self.r9_result_remote_file_content_bak_empty = cfg['R9_RESULT_REMOTE_FILE_CONTENT_EMPTY']
+        #    self.r9_result_remote_file_content_bak_sms = cfg['R9_RESULT_REMOTE_FILE_CONTENT_BAK_SMS']
+        
+        
+
+        
+    
     def run(self):
         while True:
             print('%s [INFO] : start match ul dl file'%(time.ctime()))
@@ -993,6 +1058,8 @@ class R9UlDlMatch():
                         
                         self.r9_dllist_proc()
                         self.r9_ul_dl_match()
+                        self.r9_copy_file_to_remote_content()
+                        
                         self.r9_progress_bar_finish()
                     else:
                         self.r9_ul_file_save()
@@ -1014,6 +1081,7 @@ class R9UlDlMatch():
     #                 
     #                 self.r9_progress_bar_finish()
                 elif 'DL'==self.r9_exe_type:
+                    self.r9_scp_init()
                     self.r9_mk_sub_dir()
                     self.dlfile_dict= {}
                      

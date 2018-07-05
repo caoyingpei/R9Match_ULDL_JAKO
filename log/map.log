@@ -921,3 +921,55 @@ Traceback (most recent call last):
   File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 978, in run
     os.remove(file)
 NameError: name 'file' is not defined
+2018-05-29 14:44:05,984 - line:1042 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 981, in run
+    1+x
+NameError: name 'x' is not defined
+2018-05-29 14:44:25,282 - line:1042 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 981, in run
+    1+x
+NameError: name 'x' is not defined
+2018-05-29 19:01:44,085 - line:1107 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1062, in run
+    self.r9_copy_file_to_remote_content()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
+    os.move
+AttributeError: 'module' object has no attribute 'move'
+2018-05-29 19:01:45,950 - line:1107 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1062, in run
+    self.r9_copy_file_to_remote_content()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
+    os.move
+AttributeError: 'module' object has no attribute 'move'
+2018-05-29 19:01:47,373 - line:1107 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1062, in run
+    self.r9_copy_file_to_remote_content()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
+    os.move
+AttributeError: 'module' object has no attribute 'move'
+2018-05-29 19:01:48,676 - line:1107 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1062, in run
+    self.r9_copy_file_to_remote_content()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
+    os.move
+AttributeError: 'module' object has no attribute 'move'
+2018-05-29 19:01:49,894 - line:1107 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1062, in run
+    self.r9_copy_file_to_remote_content()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
+    os.move
+AttributeError: 'module' object has no attribute 'move'
+2018-05-29 19:01:51,152 - line:1107 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1062, in run
+    self.r9_copy_file_to_remote_content()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
+    os.move
+AttributeError: 'module' object has no attribute 'move'
