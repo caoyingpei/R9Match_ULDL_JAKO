@@ -973,3 +973,246 @@ Traceback (most recent call last):
   File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1031, in r9_copy_file_to_remote_content
     os.move
 AttributeError: 'module' object has no attribute 'move'
+2018-08-12 16:32:26,472 - line:1171 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1124, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 844, in r9_ul_file_save
+    ll = l.split('_')
+AttributeError: 'list' object has no attribute 'split'
+2018-08-12 16:35:33,369 - line:1171 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1124, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 844, in r9_ul_file_save
+    ll = l[0].split('_')
+IndexError: list index out of range
+2018-08-12 16:35:52,508 - line:1171 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1124, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 844, in r9_ul_file_save
+    ll = l[0].split('_')
+IndexError: list index out of range
+2018-08-12 16:36:21,593 - line:1172 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1125, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 845, in r9_ul_file_save
+    ll = l[0].split('_')
+IndexError: list index out of range
+2018-08-12 16:36:47,700 - line:1173 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1126, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 846, in r9_ul_file_save
+    ll = l[0].split('_')
+IndexError: list index out of range
+2018-08-12 16:37:12,561 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 848, in r9_ul_file_save
+    ll = l[0].split('_')
+IndexError: list index out of range
+2018-08-12 16:37:53,445 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 848, in r9_ul_file_save
+    ll = l[0].split('_')
+IndexError: list index out of range
+2018-08-12 16:38:26,924 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 851, in r9_ul_file_save
+    if ll[0]>360 :
+TypeError: unorderable types: str() > int()
+2018-08-12 16:39:32,576 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 851, in r9_ul_file_save
+    if ll[0]>360 :
+TypeError: unorderable types: str() > int()
+2018-08-12 16:39:46,299 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 851, in r9_ul_file_save
+    if ll[0]>360 :
+TypeError: unorderable types: str() > int()
+2018-08-12 16:40:18,590 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 851, in r9_ul_file_save
+    if ll[0]>360 :
+TypeError: unorderable types: str() > int()
+2018-08-12 16:40:29,482 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 851, in r9_ul_file_save
+    if ll[0]>360 :
+TypeError: unorderable types: str() > int()
+2018-08-12 16:42:24,342 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 851, in r9_ul_file_save
+    if ll[0]>360 :
+TypeError: unorderable types: str() > int()
+2018-08-12 16:42:44,786 - line:1175 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1128, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 858, in r9_ul_file_save
+    ll = l.split('_')
+AttributeError: 'list' object has no attribute 'split'
+2018-08-12 16:57:02,611 - line:1172 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1125, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 619, in r9_ul_dl_match
+    self.r9_dl_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 687, in r9_dl_file_save
+    ll = l.split('_')
+AttributeError: 'list' object has no attribute 'split'
+2018-08-12 17:11:05,433 - line:1177 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1130, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 848, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:12:09,212 - line:1178 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1131, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 856, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:12:36,038 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 857, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:12:55,486 - line:1180 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1133, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 858, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:13:13,439 - line:1181 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1134, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 859, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:13:30,194 - line:1181 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1134, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 859, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:14:03,033 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 869, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:15:13,685 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 869, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:17:20,178 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 869, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:19:32,770 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 869, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:19:52,328 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 869, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'
+2018-08-12 17:20:21,306 - line:1179 - main - ERROR - Exception Logged
+Traceback (most recent call last):
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 1132, in run
+    self.r9_ul_dl_match()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 618, in r9_ul_dl_match
+    self.r9_ul_file_save()
+  File "C:\Users\T450S\workspace\PY_CYP\R9Match_ULDL_JAKO\r9_ul_dl_match.py", line 869, in r9_ul_file_save
+    1+'1'
+TypeError: unsupported operand type(s) for +: 'int' and 'str'

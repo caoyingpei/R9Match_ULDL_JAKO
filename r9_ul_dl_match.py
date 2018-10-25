@@ -446,15 +446,20 @@ class R9UlDlMatch():
             while j < len(self.dlfile_dict[key]):
                 ulfile= self.ulfile_dict[key][i]
                 dlfile= self.dlfile_dict[key][j]
+                file_size = os.path.getsize(ulfile)/1024
+                if file_size<self.r9_change_file_loc_kb_thres:
+                    j=j+1
+                    continue
                 ulfile = ulfile.rsplit('.')[0]
                 dlfile = dlfile.rsplit('.')[0]
                 ultmpList = self.r9_split(ulfile)
                 dltmpList = self.r9_split(dlfile)
 #                 UlFrameNum= (int(ultmpList[-1])+100)%self.TOTAL_FRAME_NUM
+
                 UlFrameNum= int(ultmpList[-1])
                 DlFrameNum= int(dltmpList[-1])
 #                 if (UlFrameNum - DlFrameNum) TOTAL_FRAME_NUM
-                if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period and abs(DlFrameNum - UlFrameNum) +self.TOTAL_FRAME_NUM>self.r9_ul_dl_period :
+                if abs(UlFrameNum - DlFrameNum)>self.r9_ul_dl_period and abs(DlFrameNum - UlFrameNum +self.TOTAL_FRAME_NUM)>self.r9_ul_dl_period :
 #                     print("ERROR")
 #                 if 0:
                     pass
@@ -475,11 +480,23 @@ class R9UlDlMatch():
                         remotfile=remotfile.replace('##','#N#') 
                     except:
                         pass
-                    
                     r=re.compile('#.*?#.*?#(.*?)#N#')
                     l=r.findall(remotfile)
-                    dl_telnum = r.findall(dlfile)
                     remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
+                    if tmpfile[2] == 'I' or tmpfile[2] == 'i':
+                        r=re.compile('#.*?#.*?#(.*?)#N#')
+                        #l=r.findall(remotfile)
+                        dl_telnum = r.findall(dlfile)
+                    #remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
+#                     if tmpfile[2] == 'I' or tmpfile[2] == 'i':
+#                         r=re.compile('#.*?#.*?#N#(.*?)#')
+#                         l=r.findall(remotfile)
+#                         remotfile = remotfile.replace('#N#'+l[0]+'#','#'+l[0]+'#N#')
+#                     else:
+#                         r=re.compile('#.*?#.*?#(.*?)#N#')
+#                         l=r.findall(remotfile)
+#                         remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
+                    
                     
                     split_header=remotfile.rsplit('\\',1)
                     
@@ -499,7 +516,12 @@ class R9UlDlMatch():
                                     +dlfile.rsplit('\\',1)[1][26:29])
                     if 'i'==replace_header[2] or 'I'==replace_header[2]:
                         try:
-                            replace_header = replace_header.replace('#N#N#','#N#'+dl_telnum[0]+'#')
+                            replace_header = replace_header.replace('#N#N#','#'+dl_telnum[0]+'#N#')
+                        except:
+                            pass
+                    if 'o'==replace_header[2] or 'O'==replace_header[2]:
+                        try:
+                            replace_header = replace_header.replace('#N#N#','#'+dl_telnum[0]+'#N#')
                         except:
                             pass
                     if not os.path.exists(path):
@@ -651,6 +673,33 @@ class R9UlDlMatch():
                 
                 tep = tmpfile.split('#')
                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                    try:
+                        r=re.compile('#(.*?)#.*?#.*?#.*?#.*?#.*?#.*?#')
+                        l=r.findall(tmpfile)
+                        #l数值处理 
+                        ll = l[0].split('_')
+    
+                        
+                        real_lat = int(ll[0])*1000000+int(ll[1])
+                        if not l[0] == 'N': 
+                            if int(ll[0])>360 :
+                                real_lat = 2**32-real_lat
+                                
+                                rl = '-'+str(real_lat//1000000)+'_'+str(real_lat%1000000)
+                                tmpfile = tmpfile.replace(l[0],rl)
+                            #修改纬度数值
+                            
+                            r=re.compile('#.*?#(.*?)#.*?#.*?#.*?#.*?#.*?#')
+                            l=r.findall(tmpfile)
+                            ll = l[0].split('_')
+                            real_lat = int(ll[0])*1000000+int(ll[1])
+                            
+                            if int(ll[0])>90 :
+                                real_lat = 2**32-real_lat
+                                rl = '-'+str(real_lat//1000000)+'_'+str(real_lat%1000000)
+                                tmpfile = tmpfile.replace(l[0],rl)                  
+                    except:
+                        pass
                     path = self.r9_result_file_content_sms 
                     if not os.path.exists(path):
                         os.makedirs(path) 
@@ -658,6 +707,10 @@ class R9UlDlMatch():
                     if not os.path.exists(bak_path):
                         os.makedirs(bak_path)
                     remotfile = tmpfile[0:len(tmpfile)-20]+'.txt'
+                   
+
+                    
+                    
                 elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     path = self.r9_result_file_content_empty 
                     if not os.path.exists(path):
@@ -685,16 +738,11 @@ class R9UlDlMatch():
                     remotfile=remotfile.replace('##','#N#') 
                 except:
                     pass
-
-                r=re.compile('#.*?#.*?#(.*?)#N#')
-                l=r.findall(remotfile)
-                remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
-                # @new version delete the function
-#                 r=re.compile('IMEISV_(.*?)\.')
-#                 l=r.findall(remotfile)
-#                 if len(l)>0:
-#                     remotfile=remotfile.replace(l[0],l[0]+'0')
-                
+#                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                if tmpfile[2] == 'o' or tmpfile[2] == 'O':
+                    r=re.compile('#.*?#.*?#(.*?)#N#')
+                    l=r.findall(remotfile)
+                    remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
                   
                 remotfile_bak = bak_path+'\\'+remotfile
                 remotfile = path+'\\'+remotfile
@@ -796,6 +844,34 @@ class R9UlDlMatch():
 #                 print('aaaaa')
                 tep = tmpfile.split('#')
                 if tmpfile[1] == 's' or tmpfile[1] == 'S':
+                    try:
+                        #修改经度数值
+                        r=re.compile('#(.*?)#.*?#.*?#.*?#.*?#.*?#.*?#')
+                        l=r.findall(tmpfile)
+                        #l数值处理 
+                        ll = l[0].split('_')
+    
+                        
+                        real_lat = int(ll[0])*1000000+int(ll[1])
+                        if not l[0] == 'N': 
+                            if int(ll[0])>360 :
+                                real_lat = 2**32-real_lat
+                                
+                                rl = '-'+str(real_lat//1000000)+'_'+str(real_lat%1000000)
+                                tmpfile = tmpfile.replace(l[0],rl)
+                            #修改纬度数值
+                            
+                            r=re.compile('#.*?#(.*?)#.*?#.*?#.*?#.*?#.*?#')
+                            l=r.findall(tmpfile)
+                            ll = l[0].split('_')
+                            real_lat = int(ll[0])*1000000+int(ll[1])
+                            
+                            if int(ll[0])>90 :
+                                real_lat = 2**32-real_lat
+                                rl = '-'+str(real_lat//1000000)+'_'+str(real_lat%1000000)
+                                tmpfile = tmpfile.replace(l[0],rl)
+                    except:
+                        pass    
                     remotfile = self.r9_result_file_content_sms+'\\'+tmpfile[0:len(tmpfile)-20]+'.txt'
                 elif 1==int(tep[len(tep)-2])//128 or file_size < self.r9_change_file_loc_kb_thres:
                     if not 1==int(tep[len(tep)-2])//128:
@@ -807,11 +883,12 @@ class R9UlDlMatch():
                 
                 else:
                     remotfile = self.r9_result_file_content+'\\'+tmpfile[0:len(tmpfile)-20]+'.jako'
-                
-                r=re.compile('#.*?#.*?#(.*?)#N#')
-                l=r.findall(remotfile)
-                remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
-                
+                try:
+                    r=re.compile('#.*?#.*?#(.*?)#N#')
+                    l=r.findall(remotfile)
+                    remotfile = remotfile.replace('#'+l[0]+'#N#','#N#'+l[0]+'#')
+                except:
+                    pass
                 try:
                     remotfile=remotfile.replace('##','#N#') 
                 except:
